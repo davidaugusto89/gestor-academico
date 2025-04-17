@@ -5,6 +5,8 @@ namespace App\Core;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
+const SESSION_DURATION = 60 * 60;
+
 class TokenManager
 {
     private static ?string $secret = null;
@@ -16,7 +18,7 @@ class TokenManager
         }
     }
 
-    public static function gerar(array $payload, int $expiraEmSegundos = 10000): string
+    public static function gerar(array $payload, int $expiraEmSegundos = SESSION_DURATION): string
     {
         self::loadSecret();
 

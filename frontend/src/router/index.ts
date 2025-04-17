@@ -192,13 +192,18 @@ const router = createRouter({
 // Guard para verificar autenticação antes de acessar rotas privadas
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
-  const isAuthenticated = !!authStore.usuario // Verifica se o usuário está autenticado
+  const isAuthenticated = !!authStore.usuario
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ name: 'Login' })
-  } else {
-    next()
+  if (to.meta.requiresAuth) {
+    if (!isAuthenticated || authStore.isSessionExpired()) {
+      authStore.logout()
+      next({ name: 'Login' })
+      return
+    }
   }
+
+  next()
 })
+
 
 export default router
