@@ -1,0 +1,101 @@
+<?php
+
+namespace App\Domain\Aluno;
+
+use App\Domain\Aluno\Exceptions\AlunoJaExisteException;
+use App\Core\Exceptions\NotFoundException;
+use App\Support\PasswordManager;
+
+class Service
+{
+    public function __construct(
+        private readonly Repository $repositorio
+    ) {}
+
+    public function registrar(DTO $dados): void
+    {
+        Validator::validar($dados);
+
+        if ($this->repositorio->emailOuCpfExiste($dados->getEmail(), $dados->getCpf())) {
+            throw new AlunoJaExisteException('E-mail ou CPF já cadastrado.');
+        }
+
+        $senhaHash = PasswordManager::gerarHash($dados->getSenha());
+
+        $aluno = new Entity(
+            $dados->getNome(),
+            $dados->getNascimento(),
+            $dados->getCpf(),
+            $dados->getEmail(),
+            $senhaHash
+        );
+
+        $this->repositorio->criar($aluno);
+    }
+
+    public function listarTodos(): array
+    {
+        return $this->repositorio->listarTodos('nome');
+    }
+
+    public function buscarPorId(int $id): Entity
+    {
+        $aluno = $this->repositorio->buscarPorId($id);
+
+        if (!$aluno) {
+            throw new NotFoundException("Aluno {$id} não encontrado.");
+        }
+
+        return $aluno;
+    }
+
+    public function buscarPorNome(string $nome): array
+    {
+        return $this->repositorio->buscarPorNome($nome);
+    }
+
+    public function atualizar(int $id, DTO $dados): void
+    {
+        $emailOuCpfExiste = $this->repositorio->emailOuCpfExiste($dados->getEmail(), $dados->getCpf(), $id);
+
+        if ($emailOuCpfExiste) {
+            throw new AlunoJaExisteException('E-mail ou CPF já está sendo usado por outro aluno.');
+        }
+
+        Validator::validar($dados);
+
+        $aluno = $this->repositorio->buscarPorId($id);
+
+        if (!$aluno) {
+            throw new NotFoundException("Aluno {$id} não encontrado.");
+        }
+
+        $aluno->setNome($dados->getNome());
+        $aluno->setNascimento($dados->getNascimento());
+        $aluno->setCpf($dados->getCpf());
+        $aluno->setEmail($dados->getEmail());
+
+        if (!empty($dados->getSenha())) {
+            $aluno->setSenha(PasswordManager::gerarHash($dados->getSenha()));
+        }
+
+        $this->repositorio->atualizar($aluno->getId(), [
+            'nome'       => $aluno->getNome(),
+            'nascimento' => $aluno->getNascimento(),
+            'cpf'        => $aluno->getCpf(),
+            'email'      => $aluno->getEmail(),
+            'senha'      => $aluno->getSenha()
+        ]);
+    }
+
+    public function remover(int $id): void
+    {
+        $aluno = $this->repositorio->buscarPorId($id);
+
+        if (!$aluno) {
+            throw new NotFoundException("Aluno {$id} não encontrado.");
+        }
+
+        $this->repositorio->remover($id);
+    }
+}

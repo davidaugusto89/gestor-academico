@@ -1,0 +1,6 @@
+Options +FollowSymLinks
+RewriteEngine On
+
+# Redirecionar todas requisições para index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]
