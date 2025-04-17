@@ -44,10 +44,12 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_CHARSET: utf8mb4
     ports:
       - "3306:3306"
     volumes:
       - dbdata:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
     restart: always
 
   phpmyadmin:

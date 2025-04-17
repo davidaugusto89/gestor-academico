@@ -1,4 +1,6 @@
 -- Criar banco de dados
+SET NAMES 'utf8mb4';
+
 CREATE DATABASE IF NOT EXISTS gestor_academico DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE gestor_academico;
 
@@ -10,7 +12,7 @@ CREATE TABLE usuarios (
     senha VARCHAR(255) NOT NULL,
     papel ENUM('admin', 'user') DEFAULT 'user',
     criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabela de alunos (sem vínculo com usuários)
 CREATE TABLE alunos (
@@ -21,7 +23,7 @@ CREATE TABLE alunos (
     nascimento DATE NOT NULL,
     cpf VARCHAR(14) NOT NULL UNIQUE,
     criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabela de turmas
 CREATE TABLE turmas (
@@ -29,7 +31,7 @@ CREATE TABLE turmas (
     nome VARCHAR(100) NOT NULL,
     descricao TEXT,
     criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabela de matrículas
 CREATE TABLE matriculas (
@@ -42,14 +44,14 @@ CREATE TABLE matriculas (
     CONSTRAINT fk_aluno FOREIGN KEY (aluno_id) REFERENCES alunos(id) ON DELETE CASCADE,
     CONSTRAINT fk_turma FOREIGN KEY (turma_id) REFERENCES turmas(id) ON DELETE CASCADE,
     CONSTRAINT uc_matricula UNIQUE (aluno_id, turma_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Usuários iniciais
 -- Senha: "SenhaForte123!" (bcrypt hash gerado com password_hash)
 INSERT INTO usuarios (nome, email, senha, papel)
 VALUES
-  ('Admin FIAP', 'admin@fiap.com.br', '$2y$10$VRurf7gFLziv0/0Xmsb3SeUnKUfy9EveLBRPnY3R2A61hr9K/lao2', 'admin'),
-  ('User FIAP', 'user@fiap.com.br', '$2y$10$VRurf7gFLziv0/0Xmsb3SeUnKUfy9EveLBRPnY3R2A61hr9K/lao2', 'user');
+  ('Admin', 'admin@example.com', '$2y$10$VRurf7gFLziv0/0Xmsb3SeUnKUfy9EveLBRPnY3R2A61hr9K/lao2', 'admin'),
+  ('User', 'user@example.com', '$2y$10$VRurf7gFLziv0/0Xmsb3SeUnKUfy9EveLBRPnY3R2A61hr9K/lao2', 'user');
 
 -- Alunos iniciais
 INSERT INTO alunos (nome, email, senha, nascimento, cpf)
