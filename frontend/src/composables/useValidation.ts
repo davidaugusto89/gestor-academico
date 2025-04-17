@@ -4,17 +4,18 @@ import {
   validateCNPJ,
   validateEmail,
   validateTelefone,
+  validatePasswordStrong,
 } from '@/helpers/validations'
 
 export function useValidation() {
   const errors = ref<Record<string, string>>({})
 
-  // Mapeia os tipos para os respectivos helpers
   const validationHelpers: Record<string, (value: string) => boolean> = {
     cpf: validateCPF,
     cnpj: validateCNPJ,
     email: validateEmail,
     Telefone: validateTelefone,
+    passwordStrong: validatePasswordStrong,
     'CPF/CNPJ': (value: string) => validateCPF(value) || validateCNPJ(value),
   }
 
@@ -34,31 +35,34 @@ export function useValidation() {
   ) => {
     const newErrors = { ...errors.value }
 
-    if (rules.required && !value) {
+    const stringValue = String(value).trim()
+
+    if (rules.required && !stringValue) {
       newErrors[field] = 'Campo é obrigatório.'
     } else if (typeof value === 'string') {
-      if (rules.minLength && value.length < rules.minLength) {
-        newErrors[field] =
-          `O campo deve ter no mínimo ${rules.minLength} caracteres.`
-      } else if (rules.maxLength && value.length > rules.maxLength) {
-        newErrors[field] =
-          `O campo deve ter no máximo ${rules.maxLength} caracteres.`
-      } else if (rules.length && value.length !== rules.length) {
-        newErrors[field] =
-          `O campo deve ter exatamente ${rules.length} caracteres.`
+      if (rules.minLength && stringValue.length < rules.minLength) {
+        newErrors[field] = `Mínimo de ${rules.minLength} caracteres.`
+      } else if (rules.maxLength && stringValue.length > rules.maxLength) {
+        newErrors[field] = `Máximo de ${rules.maxLength} caracteres.`
+      } else if (rules.length && stringValue.length !== rules.length) {
+        newErrors[field] = `Deve ter exatamente ${rules.length} caracteres.`
       }
     } else if (typeof value === 'number') {
       if (rules.min !== undefined && value < rules.min) {
-        newErrors[field] = `O valor deve ser no mínimo ${rules.min}.`
+        newErrors[field] = `Mínimo permitido é ${rules.min}.`
       } else if (rules.max !== undefined && value > rules.max) {
-        newErrors[field] = `O valor deve ser no máximo ${rules.max}.`
+        newErrors[field] = `Máximo permitido é ${rules.max}.`
       }
     }
 
     if (rules.type && validationHelpers[rules.type]) {
-      const isValid = validationHelpers[rules.type](String(value))
+      const isValid = validationHelpers[rules.type](stringValue)
+
       if (!isValid) {
-        newErrors[field] = `O campo deve ser um ${rules.type} válido.`
+        newErrors[field] =
+          rules.type === 'passwordStrong'
+            ? 'Senha fraca. Use letras maiúsculas, minúsculas, número e símbolo.'
+            : `O campo deve ser um ${rules.type} válido.`
       }
     }
 
@@ -74,7 +78,7 @@ export function useValidation() {
   }
 
   const hasErrors = computed(() =>
-    Object.values(errors.value).some((error) => error !== '')
+    Object.values(errors.value).some((msg) => msg !== '')
   )
 
   return {

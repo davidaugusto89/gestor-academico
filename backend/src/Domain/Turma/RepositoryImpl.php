@@ -25,14 +25,18 @@ class RepositoryImpl extends BaseRepository implements Repository
 
     public function listarTodos(string $colunaOrdenacao = 'nome'): array
     {
-        $stmt = $this->pdo->query("SELECT * FROM {$this->tabela} ORDER BY {$colunaOrdenacao} ASC");
+        $sql = "
+        SELECT t.*, COUNT(m.aluno_id) AS total_alunos
+        FROM turmas t
+        LEFT JOIN matriculas m ON m.turma_id = t.id
+        GROUP BY t.id
+        ORDER BY t.{$colunaOrdenacao} ASC
+        ";
 
-        $result = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $result[] = $this->mapearParaEntidade($row);
-        }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
 
-        return $result;
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function buscarPorNome(string $nome): array

@@ -69,10 +69,10 @@ Esse script realiza:
 
 ## 🔐 Credenciais
 
-| Tipo        | E-mail              | Senha         |
-|-------------|---------------------|---------------|
-| Admin       | admin@example.com   | 123456        |
-| Usuário     | user@example.com    | 123456        |
+| Tipo        | E-mail              | Senha              |
+|-------------|---------------------|--------------------|
+| Admin       | admin@example.com   | SenhaForte123!     |
+| Usuário     | user@example.com    | SenhaForte123!     |
 
 ---
 

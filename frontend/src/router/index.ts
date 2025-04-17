@@ -14,10 +14,19 @@ import ForgotPassword from '@/views/Login/ForgotPassword.vue'
 //---Dashboard
 import Dashboard from '@/views/Dashboard/Dashboard.vue'
 
-//---Clientes
-import ClientesList from '@/views/Clientes/List.vue'
-import ClienteForm from '@/views/Clientes/Form.vue'
-import ClienteView from '@/views/Clientes/View.vue'
+//---Alunos
+import AlunoList from '@/views/Alunos/List.vue'
+import AlunoForm from '@/views/Alunos/Form.vue'
+import AlunoView from '@/views/Alunos/View.vue'
+
+//---Turmas
+import TurmaList from '@/views/Turmas/List.vue'
+import TurmaForm from '@/views/Turmas/Form.vue'
+import TurmaView from '@/views/Turmas/View.vue'
+
+//---Matriculas
+import MatriculaList from '@/views/Matriculas/List.vue'
+import MatriculaForm from '@/views/Matriculas/Form.vue'
 
 //---Usuarios
 import UsuariosList from '@/views/Usuarios/List.vue'
@@ -94,29 +103,71 @@ const routes = [
         meta: { requiresAuth: true },
       },
       {
-        path: 'clientes',
-        component: ClientesList,
-        name: 'ClientesList',
+        path: 'alunos',
+        component: AlunoList,
+        name: 'AlunosList',
         meta: { requiresAuth: true },
       },
       {
-        path: 'clientes/novo',
-        component: ClienteForm,
-        name: 'ClientesNovo',
+        path: 'alunos/novo',
+        component: AlunoForm,
+        name: 'AlunosNovo',
         meta: { requiresAuth: true },
       },
       {
-        path: 'clientes/visualizar/:id',
-        component: ClienteView,
-        name: 'ClientesVisualizar',
+        path: 'alunos/visualizar/:id',
+        component: AlunoView,
+        name: 'AlunosVisualizar',
         meta: { requiresAuth: true },
       },
       {
-        path: 'clientes/editar/:id',
-        component: ClienteForm,
-        name: 'EditClient',
+        path: 'alunos/editar/:id',
+        component: AlunoForm,
+        name: 'AlunosEditar',
         meta: { requiresAuth: true },
       },
+      {
+        path: 'turmas',
+        component: TurmaList,
+        name: 'TurmasList',
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'turmas/novo',
+        component: TurmaForm,
+        name: 'TurmasNovo',
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'turmas/visualizar/:id',
+        component: TurmaView,
+        name: 'TurmasVisualizar',
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'turmas/editar/:id',
+        component: TurmaForm,
+        name: 'TurmasEditar',
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'matriculas',
+        component: MatriculaList,
+        name: 'MatriculasList',
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'matriculas/nova',
+        component: MatriculaForm,
+        name: 'MatriculasNova',
+        meta: { requiresAuth: true },
+      },
+      // {
+      //   path: 'matriculas/turma/:id',
+      //   component: MatriculasPorTurma,
+      //   name: 'MatriculasPorTurma',
+      //   meta: { requiresAuth: true },
+      // },
       {
         path: 'usuarios',
         component: UsuariosList,

@@ -16,7 +16,7 @@ class TokenManager
         }
     }
 
-    public static function gerar(array $payload, int $expiraEmSegundos = 3600): string
+    public static function gerar(array $payload, int $expiraEmSegundos = 10000): string
     {
         self::loadSecret();
 

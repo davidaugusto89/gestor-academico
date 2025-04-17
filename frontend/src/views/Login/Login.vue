@@ -92,10 +92,10 @@
     // Validações finais antes do envio
     validate('email', email.value, {
       required: true,
-      minLength: 6,
+      minLength: 8,
       type: 'email',
     })
-    validate('senha', senha.value, { required: true, minLength: 6 })
+    validate('senha', senha.value, { required: true, minLength: 8 })
 
     // Se não houver erros, processa os dados
     if (hasErrors.value) {
@@ -109,18 +109,18 @@
     }
 
     try {
-      const response = await request.post('/auth/login', data)
+      const response = await request.post('/login', data)
 
       if (response.status === 200) {
         const authStore = useAuthStore()
         const usuario = {
-          id: response.data?.id || 0,
-          nome: response.data?.nome || '',
-          email: response.data?.email || '',
-          role: response.data?.role || '',
+          id: response.data?.usuario.id || 0,
+          nome: response.data?.usuario.nome || '',
+          email: response.data?.usuario.email || '',
+          role: response.data?.usuario.role || '',
         }
 
-        authStore.login(usuario, response.data.access_token)
+        authStore.login(usuario, response.data.token)
         router.push('/dashboard')
       }
     } finally {

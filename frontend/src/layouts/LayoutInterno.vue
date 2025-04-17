@@ -27,12 +27,36 @@
           <!-- Clientes -->
           <li>
             <router-link
-              to="/clientes"
+              to="/alunos"
               class="flex items-center py-2 px-4 rounded-lg hover:bg-[#322E50] transition-colors"
               active-class="bg-[#322E50]"
             >
-              <i class="material-icons text-lg">groups</i>
-              <span class="ml-2">Clientes</span>
+              <i class="material-icons text-lg">school</i>
+              <span class="ml-2">Alunos</span>
+            </router-link>
+          </li>
+
+          <!-- Turmas -->
+          <li>
+            <router-link
+              to="/turmas"
+              class="flex items-center py-2 px-4 rounded-lg hover:bg-[#322E50] transition-colors"
+              active-class="bg-[#322E50]"
+            >
+              <i class="material-icons text-lg">class</i>
+              <span class="ml-2">Turmas</span>
+            </router-link>
+          </li>
+
+          <!-- Matrículas -->
+          <li>
+            <router-link
+              to="/matriculas"
+              class="flex items-center py-2 px-4 rounded-lg hover:bg-[#322E50] transition-colors"
+              active-class="bg-[#322E50]"
+            >
+              <i class="material-icons text-lg">how_to_reg</i>
+              <span class="ml-2">Matrículas</span>
             </router-link>
           </li>
 
@@ -43,7 +67,7 @@
               class="flex items-center py-2 px-4 rounded-lg hover:bg-[#322E50] transition-colors"
               active-class="bg-[#322E50]"
             >
-              <i class="material-icons text-lg">person</i>
+              <i class="material-icons text-lg">manage_accounts</i>
               <span class="ml-2">Usuários</span>
             </router-link>
           </li>

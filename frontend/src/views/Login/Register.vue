@@ -127,7 +127,7 @@
           confirmButtonColor: '#3085d6',
         })
 
-        authStore.login(usuario, response.data.access_token)
+        authStore.login(usuario, response.data.token)
         router.push('/dashboard')
       }
     } finally {

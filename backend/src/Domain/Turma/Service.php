@@ -28,7 +28,6 @@ class Service
         $this->repository->criar($entity);
     }
 
-
     public function listarTodos(string $colunaOrdenacao = 'nome'): array
     {
         return $this->repository->listarTodos($colunaOrdenacao);

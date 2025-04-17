@@ -2,15 +2,23 @@
   <div class="relative overflow-x-autosm:rounded-lg">
     <div class="flex items-center justify-between pb-4">
       <!-- Título alinhado à esquerda -->
-      <h2 class="text-2xl font-bold text-gray-900">Usuários</h2>
+      <h2 class="text-2xl font-bold text-gray-900">Turmas</h2>
+
+      <!-- Botão alinhado à direita -->
+      <Button type="primary" width="small" redirect-to="/turmas/novo">
+        + Nova Turma
+      </Button>
     </div>
 
     <DataTable
       v-model:filters="filters"
       :columns="columns"
-      :data="usuarios"
+      :data="turmas"
       :advanced-filter="true"
       :is-loading="isLoading"
+      :show-link="'/turmas/visualizar/'"
+      :edit-link="'/turmas/editar/'"
+      :delete-link="'/turmas/'"
     />
   </div>
 </template>
@@ -28,23 +36,22 @@
   const columns = [
     { key: 'id', label: 'ID' },
     { key: 'nome', label: 'Nome' },
-    { key: 'email', label: 'E-mail' },
-    { key: 'papel', label: 'Papel' },
+    { key: 'total_alunos', label: 'Total de alunos' },
   ]
 
-  const usuarios = ref([])
+  const turmas = ref([])
   const isLoading = ref(true)
 
   const loadInfo = async () => {
     try {
       isLoading.value = true
-      const response = await request.get('/usuarios')
+      const response = await request.get('/turmas')
 
       if (response.status === 200) {
-        usuarios.value = response.data
+        turmas.value = response.data
       }
     } catch (error) {
-      console.error('Erro ao carregar os usuarios:', error)
+      console.error('Erro ao carregar os turmas:', error)
     } finally {
       isLoading.value = false
     }

@@ -50,15 +50,16 @@ CREATE TABLE matriculas (
 -- Senha: "SenhaForte123!" (bcrypt hash gerado com password_hash)
 INSERT INTO usuarios (nome, email, senha, papel)
 VALUES
-  ('Admin', 'admin@example.com', '$2y$10$VRurf7gFLziv0/0Xmsb3SeUnKUfy9EveLBRPnY3R2A61hr9K/lao2', 'admin'),
-  ('User', 'user@example.com', '$2y$10$VRurf7gFLziv0/0Xmsb3SeUnKUfy9EveLBRPnY3R2A61hr9K/lao2', 'user');
+  ('Admin', 'admin@example.com', '$2y$10$RiE1sC/.Mv/I4rbR4LVjxuU8mOJXG7HtvKnPKTet2fi4JQ.h.vbCK', 'admin'),
+  ('User', 'user@example.com', '$2y$10$RiE1sC/.Mv/I4rbR4LVjxuU8mOJXG7HtvKnPKTet2fi4JQ.h.vbCK', 'user');
 
 -- Alunos iniciais
+-- Senha: "SenhaForte123!" (bcrypt hash gerado com password_hash)
 INSERT INTO alunos (nome, email, senha, nascimento, cpf)
 VALUES
-  ('João da Silva', 'joao@example.com', '$2y$10$VRurf7gFLziv0/0Xmsb3SeUnKUfy9EveLBRPnY3R2A61hr9K/lao2', '2000-04-20', '18060567047'),
-  ('Maria da Silva', 'maria@example.com', '$2y$10$VRurf7gFLziv0/0Xmsb3SeUnKUfy9EveLBRPnY3R2A61hr9K/lao2', '2000-04-20', '15263980019'),
-  ('Pedro da Silva', 'pedro@example.com', '$2y$10$VRurf7gFLziv0/0Xmsb3SeUnKUfy9EveLBRPnY3R2A61hr9K/lao2', '2000-04-20', '99749812042');
+  ('João da Silva', 'joao@example.com', '$2y$10$RiE1sC/.Mv/I4rbR4LVjxuU8mOJXG7HtvKnPKTet2fi4JQ.h.vbCK', '2000-04-20', '18060567047'),
+  ('Maria da Silva', 'maria@example.com', '$2y$10$RiE1sC/.Mv/I4rbR4LVjxuU8mOJXG7HtvKnPKTet2fi4JQ.h.vbCK', '2000-04-20', '15263980019'),
+  ('Pedro da Silva', 'pedro@example.com', '$2y$10$RiE1sC/.Mv/I4rbR4LVjxuU8mOJXG7HtvKnPKTet2fi4JQ.h.vbCK', '2000-04-20', '99749812042');
 
 -- Turmas iniciais
 INSERT INTO turmas (nome, descricao)

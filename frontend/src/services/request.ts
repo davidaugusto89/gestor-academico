@@ -120,19 +120,22 @@ const alertError = (message: string) => {
     icon: 'error',
     title: 'Oops...',
     html: formattedMessage,
+    showConfirmButton: true,
+    confirmButtonText: 'OK',
+    confirmButtonColor: '#3085d6',
   })
 }
 
 const handleRequestError = (error: any) => {
   if (error.response) {
     // Erros de resposta do servidor
-    alertError(error.response.data.message || 'Erro inesperado no servidor.')
+    alertError(error.response.data.error || error.response.data.erro || 'Erro inesperado no servidor.')
   } else if (error.request) {
     // Sem resposta do servidor
     alertError('Erro de conexão. Verifique sua internet.')
   } else {
     // Outros erros
-    alertError(error.message || 'Ocorreu um erro.')
+    alertError(error.error || 'Ocorreu um erro.')
   }
 }
 

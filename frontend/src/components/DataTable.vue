@@ -36,7 +36,8 @@
     <!-- Filtros Avançados -->
     <div
       v-if="showAdvancedFilters"
-      class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-lg"
+      class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg"
+      :class="`md:grid-cols-${filters.length}`"
     >
       <div v-for="filter in filters" :key="filter.key">
         <Input
@@ -178,7 +179,7 @@
   const globalSearch = ref('')
   const showAdvancedFilters = ref(false)
   const currentPage = ref(1)
-  const itemsPerPage = ref(5)
+  const itemsPerPage = ref(10)
   const isLoadingDelete = ref(false)
 
   const showActions = computed(() => {
@@ -265,6 +266,7 @@
       text: 'Deseja excluir o item #' + id + '?',
       icon: 'warning',
       showCancelButton: true,
+      showConfirmButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sim, excluir!',
@@ -275,7 +277,16 @@
         isLoadingDelete.value = false
 
         if (result.isConfirmed) {
-          Swal.fire('Excluido!', 'Item excluido com sucesso.', 'success')
+          await Swal.fire({
+            icon: 'success',
+            title: 'Sucesso!',
+            text: 'Item excluido com sucesso.',
+            showConfirmButton: true,
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3085d6',
+          })
+
+          window.location.reload()
         }
       }
     })
