@@ -4,6 +4,13 @@ namespace App\Support;
 
 class CpfValidator
 {
+    /**
+     * Valida um CPF verificando se ele tem o formato correto e dígitos verificadores válidos.
+     *
+     * @param string $cpf CPF a ser validado.
+     * @return bool Retorna true se o CPF for válido, caso contrário, false.
+     */
+
     public static function isValido(string $cpf): bool
     {
         // Remove tudo que não for número
