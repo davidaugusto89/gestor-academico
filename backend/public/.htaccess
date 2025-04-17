@@ -1,6 +1,9 @@
 Options +FollowSymLinks
 RewriteEngine On
 
-# Redirecionar todas requisições para index.php
-RewriteCond %{REQUEST_FILENAME} !-f
+# Permitir acesso direto a arquivos (como /docs/index.html, /swagger.json etc)
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# Redirecionar todas as outras requisições para index.php
 RewriteRule ^ index.php [QSA,L]

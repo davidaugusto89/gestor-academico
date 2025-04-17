@@ -13,6 +13,11 @@ class Http
             $uri = substr($uri, 4) ?: '/';
         }
 
+        // Remove barra final (exceto se for apenas '/')
+        if ($uri !== '/' && str_ends_with($uri, '/')) {
+            $uri = rtrim($uri, '/');
+        }
+
         return $uri;
     }
 }
