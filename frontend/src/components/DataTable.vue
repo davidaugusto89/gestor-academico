@@ -3,26 +3,9 @@
     <!-- Loading -->
     <div
       v-if="props.dataLink ? isLoadingInternal : props.isLoading"
-      class="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50"
+      class="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 z-10"
     >
       <div class="loader">Carregando...</div>
-    </div>
-
-    <!-- Busca e Filtros -->
-    <div
-      class="flex flex-col md:flex-row items-start md:items-center justify-between p-4 bg-white dark:bg-gray-900"
-    >
-      <!-- Busca Global -->
-      <div class="w-full md:w-auto mb-4 md:mb-0">
-      </div>
-
-      <!-- Botão Filtros Avançados -->
-      <div v-if="advancedFilter" class="w-full md:w-auto">
-        <Button type="outline" @click="toggleAdvancedFilters">
-          <i class="material-icons">filter_list</i>
-          Filtros Avançados
-        </Button>
-      </div>
     </div>
 
     <!-- Filtros Avançados -->
@@ -30,6 +13,7 @@
       v-if="showAdvancedFilters"
       class="flex flex-wrap gap-3 bg-gray-50 p-4 rounded-lg items-end"
     >
+      <strong class="text-gray-700 w-full">Filtros:</strong>
       <div
         v-for="filter in filters"
         :key="filter.key"
@@ -58,87 +42,80 @@
       </div>
     </div>
 
-    <!-- Tabela -->
-    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-        <tr>
-          <th v-for="column in columns" :key="column.key" class="px-5 py-3">
-            {{ column.label }}
-          </th>
-          <th class="px-6 py-3" v-if="showActions">Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="item in localData"
-          :key="item.id"
-          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 even:bg-gray-50 hover:bg-gray-100 dark:even:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
-        >
-          <td v-for="column in columns"
-            :key="column.key"
-            class="px-5 py-4"
-            :width="column?.size ?? ''">
-            <span v-if="!column?.mask">{{ item[column.key] }}</span>
-            <span v-else>{{ applyMask(item[column.key], column?.mask) }}</span>
-          </td>
-          <td class="px-6 py-4 gap-2 flex w-[175px]" v-if="showActions">
-            <Button
-              type="info"
-              width="small"
-              icon="visibility"
-              :redirect-to="showLink + item.id"
-              v-if="showLink"
-            >
-              Visualizar
-            </Button>
-            <Button
-              type="success"
-              width="small"
-              :redirect-to="editLink + item.id"
-              icon="edit"
-              v-if="editLink"
-            >
-              Editar
-            </Button>
-            <Button
-              type="danger"
-              width="small"
-              icon="delete"
-              v-if="deleteLink"
-              @click="deleteItem(item.id)"
-              :is-loading="isLoadingDelete"
-            >
-              Excluir
-            </Button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <hr v-if="showAdvancedFilters" class="mx-4 mt-0 mb-4 border-gray-300" />
+
+    <!-- Tabela responsiva -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 min-w-full">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th v-for="column in columns" :key="column.key" class="px-5 py-3 whitespace-nowrap">
+              {{ column.label }}
+            </th>
+            <th class="px-6 py-3 whitespace-nowrap" v-if="showActions">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="item in localData"
+            :key="item.id"
+            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 even:bg-gray-50 hover:bg-gray-100 dark:even:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+          >
+            <td v-for="column in columns" :key="column.key" class="px-5 py-4 whitespace-nowrap">
+              <span v-if="!column?.mask">{{ item[column.key] }}</span>
+              <span v-else>{{ applyMask(item[column.key], column?.mask) }}</span>
+            </td>
+            <td class="px-6 py-4 gap-2 flex flex-wrap" v-if="showActions">
+              <Button
+                type="info"
+                width="small"
+                icon="visibility"
+                :redirect-to="showLink + item.id"
+                v-if="showLink"
+              >
+                Visualizar
+              </Button>
+              <Button
+                type="success"
+                width="small"
+                :redirect-to="editLink + item.id"
+                icon="edit"
+                v-if="editLink"
+              >
+                Editar
+              </Button>
+              <Button
+                type="danger"
+                width="small"
+                icon="delete"
+                v-if="deleteLink"
+                @click="deleteItem(item.id)"
+                :is-loading="isLoadingDelete"
+              >
+                Excluir
+              </Button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- Paginação -->
-    <div class="flex justify-between items-center px-4 py-3 bg-white dark:bg-gray-900">
+    <div class="flex flex-col md:flex-row justify-between items-center px-4 py-3 bg-white dark:bg-gray-900 gap-4">
       <Select v-model="itemsPerPage" :options="itemsPerPageOptions" width="full" />
 
       <span class="text-sm text-gray-700 dark:text-gray-400">
         Mostrando {{ currentPage * itemsPerPage }} de {{ totalItems }} itens
       </span>
 
-      <nav class="inline-flex gap-2">
+      <nav class="inline-flex flex-wrap gap-2">
         <!-- Primeira página -->
-        <Button
-          @click="changePage(1)"
-          :disabled="currentPage === 1"
-           width="sm"
-        >
+        <Button @click="changePage(1)" :disabled="currentPage === 1" width="sm">
           <i class="material-icons">first_page</i>
         </Button>
 
         <!-- Página anterior -->
-        <Button
-          @click="changePage(currentPage - 1)"
-          :disabled="currentPage === 1"
-           width="sm"
-        >
+        <Button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" width="sm">
           <i class="material-icons">chevron_left</i>
         </Button>
 
@@ -148,33 +125,26 @@
             @click="changePage(page)"
             type="outline"
             :disabled="page === currentPage"
-             width="sm"
+            width="sm"
           >
             {{ page }}
           </Button>
         </span>
 
         <!-- Próxima página -->
-        <Button
-          @click="changePage(currentPage + 1)"
-          :disabled="currentPage === totalPages"
-           width="sm"
-        >
+        <Button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages" width="sm">
           <i class="material-icons">chevron_right</i>
         </Button>
 
         <!-- Última página -->
-        <Button
-          @click="changePage(totalPages)"
-          :disabled="currentPage === totalPages"
-           width="sm"
-        >
+        <Button @click="changePage(totalPages)" :disabled="currentPage === totalPages" width="sm">
           <i class="material-icons">last_page</i>
         </Button>
       </nav>
     </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import request from '@/services/request'
@@ -205,7 +175,7 @@ const totalItems = ref(0)
 const localData = ref<any[]>([])
 const isLoading = ref(false)
 const isLoadingDelete = ref(false)
-const showAdvancedFilters = ref(false)
+const showAdvancedFilters = ref(props.advancedFilter)
 
 const itemsPerPageOptions = [
   { value: 5, label: '5' },

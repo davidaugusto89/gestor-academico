@@ -51,9 +51,9 @@
   const typeClass = computed(() => {
     switch (props.type) {
       case 'primary':
-        return 'bg-[#150F3E] text-white hover:opacity-85 focus:ring-2 focus:ring-blue-300'
+        return 'bg-[#2C5364] text-white hover:opacity-85 focus:ring-2 focus:ring-blue-300'
       case 'outline':
-        return 'bg-transparent text-[#150F3E] border border-[#150F3E] hover:bg-[#150F3E] hover:text-white focus:ring-2 focus:ring-blue-300 disabled:border-gray-900 disabled:bg-gray-900 disabled:text-white'
+        return 'bg-transparent text-[#2C5364] border border-[#2C5364] hover:bg-[#2C5364] hover:text-white focus:ring-2 focus:ring-blue-300 disabled:border-gray-900 disabled:bg-gray-900 disabled:text-white'
       case 'secondary':
         return 'bg-gray-700 text-white hover:bg-gray-600 focus:ring-2 focus:ring-gray-300'
       case 'info':

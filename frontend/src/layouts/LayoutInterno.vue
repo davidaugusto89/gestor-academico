@@ -1,8 +1,20 @@
 <template>
   <div class="flex h-screen">
+    <!-- Botão hambúrguer (mobile) -->
+    <button
+      class="md:hidden absolute top-2 right-4 z-50 bg-[#2C5364] text-white p-2 rounded-md shadow-lg"
+      @click="toggleMenu"
+    >
+      <i class="material-icons">menu</i>
+    </button>
+
     <!-- Menu Lateral -->
     <aside
-      class="w-60 bg-gradient-to-b from-[#150F3E] to-[#322E50] text-white flex flex-col shadow-lg"
+      :class="[
+        'bg-[#2C5364] text-white flex flex-col shadow-lg h-full w-60 z-40 transition-transform duration-300 md:relative',
+        isOpen ? 'translate-x-0 fixed' : 'translate-x-[-100%] fixed',
+        'md:translate-x-0 md:block'
+      ]"
     >
       <!-- Logo -->
       <div class="flex items-center justify-center">
@@ -11,28 +23,28 @@
 
       <!-- Navegação -->
       <nav class="flex-1 px-4 py-6">
-        <ul class="space-y-4">
+        <ul class="space-y-2">
           <!-- Página Inicial -->
           <li>
             <router-link
               to="/dashboard"
-              class="flex items-center py-2 px-4 rounded-lg hover:bg-[#322E50] transition-colors"
-              active-class="bg-[#322E50]"
+              class="group flex items-center py-2 px-4 rounded-lg transition-all duration-300 hover:bg-white/10 hover:pl-5"
+              :class="$route.name === 'Dashboard' ? 'bg-white/10 border-l-4 border-white pl-5' : ''"
             >
-              <i class="material-icons text-lg">home</i>
-              <span class="ml-2">Página Inicial</span>
+              <i class="material-icons text-lg group-hover:scale-110 transition-transform">home</i>
+              <span class="ml-2 font-medium">Página Inicial</span>
             </router-link>
           </li>
 
-          <!-- Clientes -->
+          <!-- Alunos -->
           <li>
             <router-link
               to="/alunos"
-              class="flex items-center py-2 px-4 rounded-lg hover:bg-[#322E50] transition-colors"
-              active-class="bg-[#322E50]"
+              class="group flex items-center py-2 px-4 rounded-lg transition-all duration-300 hover:bg-white/10 hover:pl-5"
+              :class="$route.name?.startsWith('Alunos') ? 'bg-white/10 border-l-4 border-white pl-5' : ''"
             >
-              <i class="material-icons text-lg">school</i>
-              <span class="ml-2">Alunos</span>
+              <i class="material-icons text-lg group-hover:scale-110 transition-transform">school</i>
+              <span class="ml-2 font-medium">Alunos</span>
             </router-link>
           </li>
 
@@ -40,11 +52,11 @@
           <li>
             <router-link
               to="/turmas"
-              class="flex items-center py-2 px-4 rounded-lg hover:bg-[#322E50] transition-colors"
-              active-class="bg-[#322E50]"
+              class="group flex items-center py-2 px-4 rounded-lg transition-all duration-300 hover:bg-white/10 hover:pl-5"
+              :class="$route.name?.startsWith('Turmas') ? 'bg-white/10 border-l-4 border-white pl-5' : ''"
             >
-              <i class="material-icons text-lg">class</i>
-              <span class="ml-2">Turmas</span>
+              <i class="material-icons text-lg group-hover:scale-110 transition-transform">class</i>
+              <span class="ml-2 font-medium">Turmas</span>
             </router-link>
           </li>
 
@@ -52,11 +64,11 @@
           <li>
             <router-link
               to="/matriculas"
-              class="flex items-center py-2 px-4 rounded-lg hover:bg-[#322E50] transition-colors"
-              active-class="bg-[#322E50]"
+              class="group flex items-center py-2 px-4 rounded-lg transition-all duration-300 hover:bg-white/10 hover:pl-5"
+              :class="$route.name?.startsWith('Matriculas') ? 'bg-white/10 border-l-4 border-white pl-5' : ''"
             >
-              <i class="material-icons text-lg">how_to_reg</i>
-              <span class="ml-2">Matrículas</span>
+              <i class="material-icons text-lg group-hover:scale-110 transition-transform">how_to_reg</i>
+              <span class="ml-2 font-medium">Matrículas</span>
             </router-link>
           </li>
 
@@ -64,11 +76,11 @@
           <li>
             <router-link
               to="/usuarios"
-              class="flex items-center py-2 px-4 rounded-lg hover:bg-[#322E50] transition-colors"
-              active-class="bg-[#322E50]"
+              class="group flex items-center py-2 px-4 rounded-lg transition-all duration-300 hover:bg-white/10 hover:pl-5"
+              :class="$route.name?.startsWith('Usuarios') ? 'bg-white/10 border-l-4 border-white pl-5' : ''"
             >
-              <i class="material-icons text-lg">manage_accounts</i>
-              <span class="ml-2">Usuários</span>
+              <i class="material-icons text-lg group-hover:scale-110 transition-transform">manage_accounts</i>
+              <span class="ml-2 font-medium">Usuários</span>
             </router-link>
           </li>
 
@@ -76,60 +88,50 @@
           <li>
             <router-link
               to="/logout"
-              class="flex items-center py-2 px-4 rounded-lg hover:bg-red-600 transition-colors"
+              class="group flex items-center py-2 px-4 rounded-lg transition-all duration-300 hover:bg-red-600"
               active-class="bg-red-600"
             >
-              <i class="material-icons text-lg">logout</i>
-              <span class="ml-2">Sair</span>
+              <i class="material-icons text-lg group-hover:scale-110 transition-transform">logout</i>
+              <span class="ml-2 font-medium">Sair</span>
             </router-link>
           </li>
         </ul>
       </nav>
     </aside>
 
+    <!-- Overlay (mobile) -->
+    <div
+      class="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+      v-if="isOpen"
+      @click="toggleMenu"
+    />
+
     <!-- Conteúdo Principal -->
     <div class="flex-1 flex flex-col internal-container">
-      <header
-        class="h-16 bg-gray-100 border-b border-gray-300 flex items-center px-6"
-      >
+      <header class="h-16 bg-gray-100 border-b flex items-center px-6 justify-between">
         <h1 class="text-lg font-semibold text-gray-800">Olá, {{ nome }}!</h1>
       </header>
+
       <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
-        <router-view></router-view>
+        <router-view />
       </main>
-      <footer
-        class="h-16 bg-gray-100 border-t border-gray-300 flex items-center justify-center"
-      >
-        <p class="text-sm text-gray-600">
-          &copy; 2025 - Todos os direitos reservados | Desenvolvido por: David
-          Augusto
-        </p>
+
+      <footer class="h-16 bg-gray-100 border-t flex items-center justify-center">
+        <p class="text-sm text-gray-600">© 2025 - Desenvolvido por David Augusto</p>
       </footer>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { useAuthStore } from '@/stores/authStore'
+import { ref } from 'vue'
+import { useAuthStore } from '@/stores/authStore'
 
-  const authStore = useAuthStore()
-  const nome = authStore.usuario?.nome ?? ''
+const authStore = useAuthStore()
+const nome = authStore.usuario?.nome ?? ''
+const isOpen = ref(false)
+
+const toggleMenu = () => {
+  isOpen.value = !isOpen.value
+}
 </script>
-
-<style scoped>
-  .internal-container {
-    animation: fadeIn 0.5s ease-in-out;
-  }
-
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-</style>

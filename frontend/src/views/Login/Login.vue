@@ -51,7 +51,7 @@
 
     <!-- Links de Registro e Esqueci a Senha -->
     <div class="mt-6 text-center">
-      <p class="text-sm text-gray-600">
+      <!-- <p class="text-sm text-gray-600">
         Não tem uma conta?
         <router-link to="/register" class="text-blue-500 hover:underline">
           Crie uma aqui
@@ -64,7 +64,7 @@
         >
           Esqueceu a senha?
         </router-link>
-      </p>
+      </p> -->
     </div>
   </div>
 </template>
