@@ -5,7 +5,7 @@
       class="hidden md:flex flex-col justify-center items-center w-1/2 bg-gradient-to-br from-[#150F3E] to-[#322E50] text-white p-8"
     >
       <div class="text-center">
-        <img src="/logotipo_white.png" alt="Logo" class="w-[400px]" />
+        <img src="/logotipo_white.png" alt="Logo" class="w-[200px]" />
       </div>
       <div class="mt-8"></div>
     </div>

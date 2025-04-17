@@ -6,7 +6,7 @@
     >
       <!-- Logo -->
       <div class="flex items-center justify-center">
-        <img src="/logotipo_white.png" alt="Logo" class="w-[150px] my-[2rem]" />
+        <img src="/logotipo_white.png" alt="Logo" class="w-[75px] my-[2rem]" />
       </div>
 
       <!-- Navegação -->
