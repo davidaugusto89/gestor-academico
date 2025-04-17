@@ -2,8 +2,6 @@
 
 namespace App\Domain\Usuario;
 
-use App\Utils\Normalizer;
-
 class DTO
 {
     private string $nome;

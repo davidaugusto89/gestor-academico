@@ -23,7 +23,13 @@ EnvLoader::load();
 $router = require_once __DIR__ . '/../src/Routes/api.php';
 
 $rotaAtual = Http::getNormalizedUri();
-$rotasPublicas = ['/login', '/health'];
+$rotasPublicas = ['/login', '/health', '/docs'];
+
+// Rota para documentação
+if ($rotaAtual === '/docs') {
+    require_once __DIR__ . '/../public/docs/index.html';
+    exit;
+}
 
 /**
  * Captura exceções não tratadas

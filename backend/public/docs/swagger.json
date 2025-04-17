@@ -1,0 +1,328 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Acad\u00eamica",
+    "description": "Documenta\u00e7\u00e3o da API para gerenciamento de alunos, turmas, matr\u00edculas e usu\u00e1rios.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Verificar status da API",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login do administrador",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Dados do usu\u00e1rio logado",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      }
+    },
+    "/alunos": {
+      "post": {
+        "tags": [
+          "Alunos"
+        ],
+        "summary": "Criar novo aluno",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Alunos"
+        ],
+        "summary": "Listar alunos",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      }
+    },
+    "/alunos/busca": {
+      "get": {
+        "tags": [
+          "Alunos"
+        ],
+        "summary": "Buscar alunos por nome",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      }
+    },
+    "/alunos/{id}": {
+      "get": {
+        "tags": [
+          "Alunos"
+        ],
+        "summary": "Buscar aluno por ID",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Alunos"
+        ],
+        "summary": "Atualizar aluno",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Alunos"
+        ],
+        "summary": "Remover aluno",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      }
+    },
+    "/turmas": {
+      "post": {
+        "tags": [
+          "Turmas"
+        ],
+        "summary": "Criar nova turma",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Turmas"
+        ],
+        "summary": "Listar turmas",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      }
+    },
+    "/turmas/busca": {
+      "get": {
+        "tags": [
+          "Turmas"
+        ],
+        "summary": "Buscar turmas por nome",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      }
+    },
+    "/turmas/{id}": {
+      "get": {
+        "tags": [
+          "Turmas"
+        ],
+        "summary": "Buscar turma por ID",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Turmas"
+        ],
+        "summary": "Atualizar turma",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Turmas"
+        ],
+        "summary": "Remover turma",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      }
+    },
+    "/matriculas": {
+      "post": {
+        "tags": [
+          "Matr\u00edculas"
+        ],
+        "summary": "Realizar matr\u00edcula de aluno",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Matr\u00edculas"
+        ],
+        "summary": "Remover matr\u00edcula (via body)",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      }
+    },
+    "/matriculas/turma/{id}": {
+      "get": {
+        "tags": [
+          "Matr\u00edculas"
+        ],
+        "summary": "Listar alunos por turma",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      }
+    },
+    "/usuarios": {
+      "post": {
+        "tags": [
+          "Usu\u00e1rios"
+        ],
+        "summary": "Criar novo usu\u00e1rio",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Usu\u00e1rios"
+        ],
+        "summary": "Listar usu\u00e1rios",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      }
+    },
+    "/usuarios/busca": {
+      "get": {
+        "tags": [
+          "Usu\u00e1rios"
+        ],
+        "summary": "Buscar usu\u00e1rios por nome",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      }
+    },
+    "/usuarios/{id}": {
+      "get": {
+        "tags": [
+          "Usu\u00e1rios"
+        ],
+        "summary": "Buscar usu\u00e1rio por ID",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Usu\u00e1rios"
+        ],
+        "summary": "Atualizar usu\u00e1rio",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Usu\u00e1rios"
+        ],
+        "summary": "Remover usu\u00e1rio",
+        "responses": {
+          "200": {
+            "description": "Requisi\u00e7\u00e3o bem-sucedida"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Health",
+      "description": "Verifica\u00e7\u00e3o de status da API"
+    },
+    {
+      "name": "Auth",
+      "description": "Opera\u00e7\u00f5es de autentica\u00e7\u00e3o"
+    },
+    {
+      "name": "Usu\u00e1rios",
+      "description": "Gerenciamento de usu\u00e1rios administradores"
+    },
+    {
+      "name": "Alunos",
+      "description": "Gerenciamento de alunos"
+    },
+    {
+      "name": "Turmas",
+      "description": "Gerenciamento de turmas"
+    },
+    {
+      "name": "Matr\u00edculas",
+      "description": "Gerenciamento de matr\u00edculas"
+    }
+  ]
+}
