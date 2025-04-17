@@ -13,7 +13,7 @@ class RepositoryImpl extends BaseRepository implements Repository
         $this->tabela = 'turmas';
     }
 
-    public function salvar(Entity $turma): void
+    public function criar(Entity $turma): void
     {
         $sql = "INSERT INTO {$this->tabela} (nome, descricao) VALUES (:nome, :descricao)";
         $stmt = $this->pdo->prepare($sql);
@@ -23,12 +23,16 @@ class RepositoryImpl extends BaseRepository implements Repository
         ]);
     }
 
-    public function contar(): int
+    public function listarTodos(string $colunaOrdenacao = 'nome'): array
     {
-        $sql = "SELECT COUNT(*) as total FROM {$this->tabela}";
-        $stmt = $this->pdo->query($sql);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return (int) $row['total'];
+        $stmt = $this->pdo->query("SELECT * FROM {$this->tabela} ORDER BY {$colunaOrdenacao} ASC");
+
+        $result = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = $this->mapearParaEntidade($row);
+        }
+
+        return $result;
     }
 
     public function buscarPorNome(string $nome): array
@@ -39,23 +43,60 @@ class RepositoryImpl extends BaseRepository implements Repository
 
         $result = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $result[] = new Entity(
-                $row['id'],
-                $row['nome'],
-                $row['descricao']
-            );
+            $result[] = $this->mapearParaEntidade($row);
         }
 
         return $result;
     }
 
-    public function existeComMesmoNome(string $nome): bool
+    public function existeComMesmoNome(string $nome, ?int $ignorarId = null): bool
     {
         $sql = "SELECT COUNT(*) as total FROM {$this->tabela} WHERE nome = :nome";
+
+        $params = ['nome' => $nome];
+
+        if ($ignorarId !== null) {
+            $sql .= " AND id != :id";
+            $params['id'] = $ignorarId;
+        }
+
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['nome' => $nome]);
+        $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return (int) $row['total'] > 0;
+    }
+
+    public function atualizar(int $id, array $dados): void
+    {
+        $sql = "UPDATE {$this->tabela} SET nome = :nome, descricao = :descricao WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            'id'        => $id,
+            'nome'      => $dados['nome'],
+            'descricao' => $dados['descricao'],
+        ]);
+    }
+
+    public function remover(int $id): void
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM {$this->tabela} WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+    }
+
+    public function contar(): int
+    {
+        $stmt = $this->pdo->query("SELECT COUNT(*) as total FROM {$this->tabela}");
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int) $row['total'];
+    }
+
+    protected function mapearParaEntidade(array $row): object
+    {
+        return new Entity(
+            $row['nome'],
+            $row['descricao'],
+            (int) $row['id']
+        );
     }
 }

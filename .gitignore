@@ -4,6 +4,7 @@ backend/.env
 backend/.phpunit.result.cache
 backend/coverage.xml
 backend/coverage-report/
+backend/storage/
 
 #Frontend
 frontend/.env

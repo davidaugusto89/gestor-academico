@@ -12,12 +12,12 @@ class Service
         private readonly Repository $repositorio
     ) {}
 
-    public function registrar(DTO $dados): void
+    public function criar(DTO $dados): void
     {
-        Validator::validar($dados);
+        Validator::validar($dados, null);
 
         if ($this->repositorio->emailOuCpfExiste($dados->getEmail(), $dados->getCpf())) {
-            throw new AlunoJaExisteException('E-mail ou CPF já cadastrado.');
+            throw new AlunoJaExisteException();
         }
 
         $senhaHash = PasswordManager::gerarHash($dados->getSenha());
@@ -59,10 +59,10 @@ class Service
         $emailOuCpfExiste = $this->repositorio->emailOuCpfExiste($dados->getEmail(), $dados->getCpf(), $id);
 
         if ($emailOuCpfExiste) {
-            throw new AlunoJaExisteException('E-mail ou CPF já está sendo usado por outro aluno.');
+            throw new AlunoJaExisteException();
         }
 
-        Validator::validar($dados);
+        Validator::validar($dados, $id);
 
         $aluno = $this->repositorio->buscarPorId($id);
 

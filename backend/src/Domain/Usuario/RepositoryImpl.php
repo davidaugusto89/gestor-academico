@@ -2,16 +2,15 @@
 
 namespace App\Domain\Usuario;
 
-use App\Core\Database;
+use App\Core\BaseRepository;
 use PDO;
 
-class RepositoryImpl implements Repository
+class RepositoryImpl extends BaseRepository implements Repository
 {
-    private PDO $pdo;
-
-    public function __construct()
+    public function __construct(PDO $pdo)
     {
-        $this->pdo = Database::connect();
+        parent::__construct($pdo);
+        $this->tabela = 'usuarios';
     }
 
     public function criar(Entity $usuario): void
@@ -43,34 +42,41 @@ class RepositoryImpl implements Repository
             $row['nome'],
             $row['email'],
             $row['senha'],
-            $row['papel'],
-            (int) $row['id']
+            (int) $row['id'],
+            $row['papel']
         );
     }
 
-    public function buscarPorId(int $id): ?Entity
+    public function existePorEmail(string $email, ?int $ignorarId = null): bool
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM usuarios WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $sql = "SELECT COUNT(*) FROM usuarios WHERE email = :email";
 
-        if (!$row) {
-            return null;
+        if ($ignorarId) {
+            $sql .= " AND id != :id";
         }
 
-        return new Entity(
-            $row['nome'],
-            $row['email'],
-            $row['senha'],
-            $row['papel'],
-            (int) $row['id']
-        );
+        $stmt = $this->pdo->prepare($sql);
+        $params = [
+            ':email' => $email
+        ];
+
+        if ($ignorarId) {
+            $params[':id'] = $ignorarId;
+        }
+
+        $stmt->execute($params);
+
+        return (int) $stmt->fetchColumn() > 0;
     }
 
-    public function existePorEmail(string $email): bool
+    protected function mapearParaEntidade(array $dados): object
     {
-        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE email = :email");
-        $stmt->execute([':email' => $email]);
-        return (int) $stmt->fetchColumn() > 0;
+        return new Entity(
+            $dados['nome'],
+            $dados['email'],
+            $dados['senha'],
+            (int) $dados['id'],
+            $dados['papel']
+        );
     }
 }

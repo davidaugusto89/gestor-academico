@@ -4,19 +4,15 @@ namespace App\Domain\Turma;
 
 interface Repository
 {
-    public function salvar(Entity $turma): void;
+    public function criar(Entity $turma): void;
 
-    public function atualizar(Entity $turma): void;
-
-    public function remover(int $id): void;
-
-    public function buscarPorId(int $id): ?Entity;
-
-    public function listarTodos(int $offset = 0, int $limit = 10): array;
-
-    public function contar(): int;
-
+    public function listarTodos(string $colunaOrdenacao = 'nome'): array;
+    public function buscarPorId(int $id): ?object;
     public function buscarPorNome(string $nome): array;
 
-    public function existeComMesmoNome(string $nome): bool;
+    public function existeComMesmoNome(string $nome, ?int $ignorarId = null): bool;
+
+    public function atualizar(int $id, array $dados): void;
+
+    public function remover(int $id): void;
 }

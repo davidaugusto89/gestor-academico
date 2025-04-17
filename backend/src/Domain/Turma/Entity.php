@@ -2,17 +2,17 @@
 
 namespace App\Domain\Turma;
 
-class Entity
+class Entity implements \JsonSerializable
 {
     private ?int $id;
     private string $nome;
     private string $descricao;
 
-    public function __construct(?int $id, string $nome, string $descricao)
+    public function __construct(string $nome, string $descricao, ?int $id = null)
     {
-        $this->id = $id;
         $this->nome = $nome;
         $this->descricao = $descricao;
+        $this->id = $id;
     }
 
     public function getId(): ?int
@@ -38,5 +38,14 @@ class Entity
     public function setDescricao(string $descricao): void
     {
         $this->descricao = $descricao;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'nome' => $this->nome,
+            'descricao' => $this->descricao
+        ];
     }
 }

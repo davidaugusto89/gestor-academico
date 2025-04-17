@@ -8,7 +8,7 @@ use App\Support\PasswordManager;
 
 class Validator
 {
-    public static function validar(DTO $aluno): void
+    public static function validar(DTO $aluno, ?int $id): void
     {
         if (strlen($aluno->getNome()) < 3) {
             throw new AlunoInvalidoException('Nome deve ter ao menos 3 caracteres.');
@@ -22,7 +22,11 @@ class Validator
             throw new AlunoInvalidoException('CPF inválido.');
         }
 
-        if (!PasswordManager::ehForte($aluno->getSenha())) {
+        if (!PasswordManager::ehForte($aluno->getSenha()) && !$id) {
+            throw new AlunoInvalidoException('Senha fraca. Use letras maiúsculas, minúsculas, número e símbolo.');
+        }
+
+        if ($aluno->getSenha() && $id && !PasswordManager::ehForte($aluno->getSenha())) {
             throw new AlunoInvalidoException('Senha fraca. Use letras maiúsculas, minúsculas, número e símbolo.');
         }
 

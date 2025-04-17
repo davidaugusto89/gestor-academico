@@ -18,7 +18,7 @@ class AlunoController extends BaseController
     {
         $dto = DTO::fromArray($dados);
 
-        $this->service->registrar($dto);
+        $this->service->criar($dto);
 
         Response::json(['mensagem' => 'Aluno cadastrado com sucesso.'], HttpStatus::CREATED);
     }

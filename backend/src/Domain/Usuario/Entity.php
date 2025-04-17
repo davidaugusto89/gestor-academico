@@ -2,14 +2,14 @@
 
 namespace App\Domain\Usuario;
 
-class Entity
+class Entity implements \JsonSerializable
 {
     public function __construct(
         private string $nome,
         private string $email,
         private string $senha,
-        private string $papel = 'aluno',
-        private ?int $id = null
+        private ?int $id = null,
+        private string $papel = Papel::USER->value,
     ) {}
 
     public function getId(): ?int
@@ -35,5 +35,35 @@ class Entity
     public function getPapel(): string
     {
         return $this->papel;
+    }
+
+    public function setNome(string $nome): void
+    {
+        $this->nome = $nome;
+    }
+
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
+    }
+
+    public function setSenha(string $senha): void
+    {
+        $this->senha = $senha;
+    }
+
+    public function setPapel(string $papel): void
+    {
+        $this->papel = $papel === Papel::ADMIN->value ? Papel::ADMIN->value : Papel::USER->value;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'nome' => $this->nome,
+            'email' => $this->email,
+            'papel' => $this->papel,
+        ];
     }
 }

@@ -2,18 +2,45 @@
 
 namespace App\Domain\Usuario;
 
+use App\Utils\Normalizer;
+
 class DTO
 {
-    public string $nome;
-    public string $email;
-    public string $senha;
-    public string $papel;
+    private string $nome;
+    private string $email;
+    private string $senha;
+    private string $papel;
 
-    public function __construct(string $nome, string $email, string $senha, string $papel = 'aluno')
+    private function __construct() {}
+
+    public static function fromArray(array $dados): self
     {
-        $this->nome = $nome;
-        $this->email = $email;
-        $this->senha = $senha;
-        $this->papel = $papel;
+        $dto = new self();
+        $dto->nome    = trim($dados['nome'] ?? '');
+        $dto->email   = trim($dados['email'] ?? '');
+        $dto->senha   = trim($dados['senha'] ?? '');
+        $dto->papel   = trim($dados['papel'] ?? '');
+
+        return $dto;
+    }
+
+    public function getNome(): string
+    {
+        return $this->nome;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function getSenha(): string
+    {
+        return $this->senha;
+    }
+
+    public function getPapel(): string
+    {
+        return $this->papel;
     }
 }

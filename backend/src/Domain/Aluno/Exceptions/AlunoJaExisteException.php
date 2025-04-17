@@ -6,7 +6,7 @@ use App\Core\Exceptions\BadRequestException;
 
 class AlunoJaExisteException extends BadRequestException
 {
-    public function __construct(string $mensagem = "Aluno já cadastrado.", int $codigo = 0)
+    public function __construct(string $mensagem = "Aluno já cadastrado com esse email ou CPF.", int $codigo = 0)
     {
         parent::__construct($mensagem, $codigo);
     }

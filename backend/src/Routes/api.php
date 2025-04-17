@@ -5,6 +5,7 @@ use App\Controller\AlunoController;
 use App\Controller\AuthController;
 use App\Controller\TurmaController;
 use App\Controller\MatriculaController;
+use App\Controller\UsuarioController;
 
 $router = new Router();
 
@@ -35,5 +36,13 @@ $router->delete('/turmas/{id}', [TurmaController::class, 'remover']);
 $router->post('/matriculas', [MatriculaController::class, 'matricular']);
 $router->get('/matriculas/turma/{id}', [MatriculaController::class, 'listarPorTurma']);
 $router->delete('/matriculas', [MatriculaController::class, 'remover']); // precisa do alunoId e turmaId no body
+
+//Usuario
+$router->post('/usuarios', [UsuarioController::class, 'criar']);
+$router->get('/usuarios', [UsuarioController::class, 'listar']);
+$router->get('/usuarios/busca', [UsuarioController::class, 'buscarPorNome']);
+$router->get('/usuarios/{id}', [UsuarioController::class, 'buscar']);
+$router->put('/usuarios/{id}', [UsuarioController::class, 'atualizar']);
+$router->delete('/usuarios/{id}', [UsuarioController::class, 'remover']);
 
 return $router;

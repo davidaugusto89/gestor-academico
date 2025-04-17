@@ -7,6 +7,7 @@ use App\Controller\AuthController;
 use App\Controller\TurmaController;
 use App\Controller\MatriculaController;
 use App\Controller\HealthController;
+use App\Controller\UsuarioController;
 
 use App\Domain\Aluno\RepositoryImpl as AlunoRepository;
 use App\Domain\Aluno\Service as AlunoService;
@@ -54,6 +55,13 @@ class ControllerFactory
             ),
 
             HealthController::class => new HealthController(),
+
+            UsuarioController::class => new UsuarioController(
+                new UsuarioService(
+                    new UsuarioRepository(Database::connect()),
+                    new UsuarioValidator()
+                )
+            ),
 
             default => throw new \RuntimeException("Controller não registrado: $controllerClass")
         };

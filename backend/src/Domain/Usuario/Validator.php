@@ -7,21 +7,25 @@ use App\Support\PasswordManager;
 
 class Validator
 {
-    public static function validar(DTO $dto): void
+    public static function validar(DTO $dto, ?int $id): void
     {
-        if (strlen(trim($dto->nome)) < 3) {
+        if (strlen(trim($dto->getNome())) < 3) {
             throw new UsuarioInvalidoException("Nome deve ter ao menos 3 caracteres.");
         }
 
-        if (!filter_var($dto->email, FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($dto->getEmail(), FILTER_VALIDATE_EMAIL)) {
             throw new UsuarioInvalidoException("E-mail inválido.");
         }
 
-        if (!PasswordManager::ehForte($dto->senha)) {
+        if (!PasswordManager::ehForte($dto->getSenha()) && !$id) {
             throw new UsuarioInvalidoException("Senha fraca. Use letras maiúsculas, minúsculas, números e símbolos.");
         }
 
-        if (!in_array($dto->papel, ['admin', 'user'], true)) {
+        if ($id && $dto->getSenha() && !PasswordManager::ehForte($dto->getSenha())) {
+            throw new UsuarioInvalidoException("Senha inválida.");
+        }
+
+        if (!in_array($dto->getPapel(), ['admin', 'user'], true)) {
             throw new UsuarioInvalidoException("Papel inválido.");
         }
     }

@@ -16,10 +16,7 @@ class TurmaController extends BaseController
 
     public function criar(array $dados): void
     {
-        $dto = new DTO(
-            $dados['nome'],
-            $dados['descricao']
-        );
+        $dto = DTO::fromArray($dados);
 
         $this->service->criar($dto);
 
@@ -46,10 +43,7 @@ class TurmaController extends BaseController
 
     public function atualizar(int $id, array $dados): void
     {
-        $dto = new DTO(
-            $dados['nome'],
-            $dados['descricao']
-        );
+        $dto = DTO::fromArray($dados);
 
         $this->service->atualizar($id, $dto);
 

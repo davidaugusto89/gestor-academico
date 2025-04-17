@@ -34,6 +34,10 @@ WORKDIR /var/www/html
 # Copiar todos os arquivos para dentro do container
 COPY . .
 
+# Cria pasta de logs e define permissões
+RUN mkdir -p /var/www/html/storage/logs \
+    && chmod -R 777 /var/www/html/storage/logs
+
 # Instalar dependências
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
