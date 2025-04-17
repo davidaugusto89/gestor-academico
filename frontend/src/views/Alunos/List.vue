@@ -13,9 +13,10 @@
     <DataTable
       v-model:filters="filters"
       :columns="columns"
-      :data="alunos"
+      :data="alunos ?? []"
       :advanced-filter="true"
       :is-loading="isLoading"
+      :data-link="'/alunos'"
       :show-link="'/alunos/visualizar/'"
       :edit-link="'/alunos/editar/'"
       :delete-link="'/alunos/'"
@@ -25,41 +26,20 @@
 
 <script setup lang="ts">
   import DataTable from '@/components/DataTable.vue'
-  import request from '@/services/request'
-  import { onMounted, ref } from 'vue'
+  import { ref } from 'vue'
 
   const filters = ref([
     { key: 'id', label: 'ID', placeholder: 'Filtrar por ID' },
     { key: 'nome', label: 'Nome', placeholder: 'Filtrar por Nome' },
-    //{ key: 'email', label: 'Email', placeholder: 'Filtrar por Email' },
   ])
 
   const columns = [
-    { key: 'id', label: 'ID' },
+    { key: 'id', label: 'ID', size: '75px' },
     { key: 'nome', label: 'Nome' },
-    { key: 'cpf', label: 'CPF' },
+    { key: 'cpf', label: 'CPF', size: '200px', mask: 'cpf' },
     { key: 'email', label: 'Email' },
   ]
 
   const alunos = ref([])
   const isLoading = ref(true)
-
-  const loadInfo = async () => {
-    try {
-      isLoading.value = true
-      const response = await request.get('/alunos')
-
-      if (response.status === 200) {
-        alunos.value = response.data
-      }
-    } catch (error) {
-      console.error('Erro ao carregar os alunos:', error)
-    } finally {
-      isLoading.value = false
-    }
-  }
-
-  onMounted(() => {
-    loadInfo()
-  })
 </script>

@@ -6,6 +6,7 @@ use App\Core\BaseController;
 use App\Core\HttpStatus;
 use App\Domain\Aluno\Service;
 use App\Domain\Aluno\DTO;
+use App\Utils\Paginador;
 use App\Utils\Response;
 
 class AlunoController extends BaseController
@@ -23,10 +24,17 @@ class AlunoController extends BaseController
         Response::json(['mensagem' => 'Aluno cadastrado com sucesso.'], HttpStatus::CREATED);
     }
 
-    public function listar(): void
+    public function listar(array $params): void
     {
-        $alunos = $this->service->listarTodos();
-        Response::json($alunos, HttpStatus::OK);
+        $paramsFilter = Paginador::extrairParametros($params);
+        $retorno = $this->service->listarTodos($paramsFilter, 'nome:asc',);
+
+        $resultado = Paginador::formatarResultado(
+            $retorno['data'],
+            $retorno['total']
+        );
+
+        Response::json($resultado, HttpStatus::OK);
     }
 
     public function buscar(int $id): void
@@ -35,8 +43,9 @@ class AlunoController extends BaseController
         Response::json($aluno, HttpStatus::OK);
     }
 
-    public function buscarPorNome(string $nome): void
+    public function buscarPorNome(array $dados): void
     {
+        $nome = $dados['nome'] ?? '';
         $alunos = $this->service->buscarPorNome($nome);
         Response::json($alunos, HttpStatus::OK);
     }

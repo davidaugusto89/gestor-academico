@@ -7,12 +7,14 @@ class Entity implements \JsonSerializable
     private ?int $id;
     private string $nome;
     private string $descricao;
+    private ?int $totalAlunos = null;
 
-    public function __construct(string $nome, string $descricao, ?int $id = null)
+    public function __construct(string $nome, string $descricao, ?int $id = null, ?int $totalAlunos = 0)
     {
         $this->nome = $nome;
         $this->descricao = $descricao;
         $this->id = $id;
+        $this->totalAlunos = $totalAlunos;
     }
 
     public function getId(): ?int
@@ -40,12 +42,23 @@ class Entity implements \JsonSerializable
         $this->descricao = $descricao;
     }
 
+    public function getTotalAlunos(): ?int
+    {
+        return $this->totalAlunos;
+    }
+
+    public function setTotalAlunos(int $totalAlunos): void
+    {
+        $this->totalAlunos = $totalAlunos;
+    }
+
     public function jsonSerialize(): array
     {
         return [
             'id' => $this->id,
             'nome' => $this->nome,
-            'descricao' => $this->descricao
+            'descricao' => $this->descricao,
+            'total_alunos' => $this->totalAlunos
         ];
     }
 }

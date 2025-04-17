@@ -13,9 +13,10 @@
     <DataTable
       v-model:filters="filters"
       :columns="columns"
-      :data="turmas"
+      :data="turmas ?? []"
       :advanced-filter="true"
       :is-loading="isLoading"
+      :data-link="'/turmas'"
       :show-link="'/turmas/visualizar/'"
       :edit-link="'/turmas/editar/'"
       :delete-link="'/turmas/'"
@@ -25,8 +26,7 @@
 
 <script setup lang="ts">
   import DataTable from '@/components/DataTable.vue'
-  import request from '@/services/request'
-  import { onMounted, ref } from 'vue'
+  import { ref } from 'vue'
 
   const filters = ref([
     { key: 'id', label: 'ID', placeholder: 'Filtrar por ID' },
@@ -41,23 +41,4 @@
 
   const turmas = ref([])
   const isLoading = ref(true)
-
-  const loadInfo = async () => {
-    try {
-      isLoading.value = true
-      const response = await request.get('/turmas')
-
-      if (response.status === 200) {
-        turmas.value = response.data
-      }
-    } catch (error) {
-      console.error('Erro ao carregar os turmas:', error)
-    } finally {
-      isLoading.value = false
-    }
-  }
-
-  onMounted(() => {
-    loadInfo()
-  })
 </script>

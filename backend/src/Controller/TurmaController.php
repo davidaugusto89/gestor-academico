@@ -6,6 +6,7 @@ use App\Core\BaseController;
 use App\Core\HttpStatus;
 use App\Domain\Turma\DTO;
 use App\Domain\Turma\Service;
+use App\Utils\Paginador;
 use App\Utils\Response;
 
 class TurmaController extends BaseController
@@ -23,10 +24,17 @@ class TurmaController extends BaseController
         Response::json(['mensagem' => 'Turma cadastrada com sucesso.'], HttpStatus::CREATED);
     }
 
-    public function listar(): void
+    public function listar(array $params): void
     {
-        $turmas = $this->service->listarTodos();
-        Response::json($turmas, HttpStatus::OK);
+        $paramsFilter = Paginador::extrairParametros($params);
+        $retorno = $this->service->listarTodos($paramsFilter, 'nome:asc',);
+
+        $resultado = Paginador::formatarResultado(
+            $retorno['data'],
+            $retorno['total']
+        );
+
+        Response::json($resultado, HttpStatus::OK);
     }
 
     public function buscar(int $id): void

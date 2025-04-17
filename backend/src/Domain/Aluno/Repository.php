@@ -6,7 +6,7 @@ interface Repository
 {
     public function criar(Entity $aluno): void;
 
-    public function listarTodos(): array;
+    public function listarTodos(array $params, string $ordem, ?array $camposPermitidos): array;
     public function buscarPorId(int $id): ?object;
     public function buscarPorNome(string $nome): array;
 

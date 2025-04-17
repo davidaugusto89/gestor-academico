@@ -46,7 +46,7 @@
   import { useRoute } from 'vue-router'
   import request from '@/services/request'
   import { formatCpf, formatDate } from '@/helpers/formatters'
-
+  
   // Computed para obter o ID do aluno
   const route = useRoute()
   const alunoId = computed(() => route.params.id as string | null)

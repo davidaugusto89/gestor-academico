@@ -6,6 +6,7 @@ use App\Core\BaseController;
 use App\Core\HttpStatus;
 use App\Domain\Usuario\Service;
 use App\Domain\Usuario\DTO;
+use App\Utils\Paginador;
 use App\Utils\Response;
 
 class UsuarioController extends BaseController
@@ -23,10 +24,17 @@ class UsuarioController extends BaseController
         Response::json(['mensagem' => 'Usuário cadastrado com sucesso.'], HttpStatus::CREATED);
     }
 
-    public function listar(): void
+    public function listar(array $params): void
     {
-        $usuarios = $this->service->listarTodos();
-        Response::json($usuarios, HttpStatus::OK);
+        $paramsFilter = Paginador::extrairParametros($params);
+        $retorno = $this->service->listarTodos($paramsFilter, 'nome:asc',);
+
+        $resultado = Paginador::formatarResultado(
+            $retorno['data'],
+            $retorno['total']
+        );
+
+        Response::json($resultado, HttpStatus::OK);
     }
 
     public function buscar(int $id): void

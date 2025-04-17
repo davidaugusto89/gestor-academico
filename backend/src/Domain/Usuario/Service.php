@@ -46,9 +46,9 @@ class Service
         $this->repositorio->criar($usuario);
     }
 
-    public function listarTodos(): array
+    public function listarTodos(array $params, string $ordem): array
     {
-        return $this->repositorio->listarTodos('nome');
+        return $this->repositorio->listarTodos($params, $ordem, Filter::camposPermitidos());
     }
 
     public function buscarPorId(int $id): Entity

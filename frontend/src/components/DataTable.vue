@@ -2,7 +2,7 @@
   <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
     <!-- Loading -->
     <div
-      v-if="isLoading"
+      v-if="props.dataLink ? isLoadingInternal : props.isLoading"
       class="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50"
     >
       <div class="loader">Carregando...</div>
@@ -14,14 +14,6 @@
     >
       <!-- Busca Global -->
       <div class="w-full md:w-auto mb-4 md:mb-0">
-        <Input
-          type="text"
-          id="global-search"
-          v-model="globalSearch"
-          placeholder="Buscar..."
-          label=""
-          width="full"
-        />
       </div>
 
       <!-- Botão Filtros Avançados -->
@@ -36,29 +28,41 @@
     <!-- Filtros Avançados -->
     <div
       v-if="showAdvancedFilters"
-      class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg"
-      :class="`md:grid-cols-${filters.length}`"
+      class="flex flex-wrap gap-3 bg-gray-50 p-4 rounded-lg items-end"
     >
-      <div v-for="filter in filters" :key="filter.key">
+      <div
+        v-for="filter in filters"
+        :key="filter.key"
+        class="flex-1 min-w-[200px]"
+      >
         <Input
           type="text"
           :id="filter.key"
           v-model="filter.value"
           :placeholder="filter.placeholder"
           width="full"
-          @input="applyFilter(filter.key, $event.target.value)"
           :label="filter.label"
         />
+      </div>
+
+      <div class="flex mb-4">
+        <Button type="outline" @click="clearFilters">
+          Limpar Filtros
+        </Button>
+      </div>
+
+      <div class="flex mb-4">
+        <Button type="primary" @click="applyFilters">
+          Aplicar Filtros
+        </Button>
       </div>
     </div>
 
     <!-- Tabela -->
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-      <thead
-        class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-      >
+      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
         <tr>
-          <th v-for="column in columns" :key="column.key" class="px-6 py-3">
+          <th v-for="column in columns" :key="column.key" class="px-5 py-3">
             {{ column.label }}
           </th>
           <th class="px-6 py-3" v-if="showActions">Ações</th>
@@ -66,14 +70,18 @@
       </thead>
       <tbody>
         <tr
-          v-for="item in paginatedData"
+          v-for="item in localData"
           :key="item.id"
           class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 even:bg-gray-50 hover:bg-gray-100 dark:even:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
         >
-          <td v-for="column in columns" :key="column.key" class="px-6 py-4">
-            {{ item[column.key] }}
+          <td v-for="column in columns"
+            :key="column.key"
+            class="px-5 py-4"
+            :width="column?.size ?? ''">
+            <span v-if="!column?.mask">{{ item[column.key] }}</span>
+            <span v-else>{{ applyMask(item[column.key], column?.mask) }}</span>
           </td>
-          <td class="px-6 py-4 gap-2 flex w-[150px]" v-if="showActions">
+          <td class="px-6 py-4 gap-2 flex w-[175px]" v-if="showActions">
             <Button
               type="info"
               width="small"
@@ -108,40 +116,60 @@
     </table>
 
     <!-- Paginação -->
-    <div
-      class="flex justify-between items-center px-4 py-3 bg-white dark:bg-gray-900"
-    >
-      <!-- Seletor de itens por página -->
-      <Select
-        v-model="itemsPerPage"
-        :options="itemsPerPageOptions"
-        width="full"
-      />
+    <div class="flex justify-between items-center px-4 py-3 bg-white dark:bg-gray-900">
+      <Select v-model="itemsPerPage" :options="itemsPerPageOptions" width="full" />
 
       <span class="text-sm text-gray-700 dark:text-gray-400">
-        Mostrando {{ paginatedData.length }} de {{ filteredData.length }} itens
+        Mostrando {{ currentPage * itemsPerPage }} de {{ totalItems }} itens
       </span>
-      <nav class="inline-flex -space-x-px gap-2">
+
+      <nav class="inline-flex gap-2">
+        <!-- Primeira página -->
+        <Button
+          @click="changePage(1)"
+          :disabled="currentPage === 1"
+           width="sm"
+        >
+          <i class="material-icons">first_page</i>
+        </Button>
+
+        <!-- Página anterior -->
         <Button
           @click="changePage(currentPage - 1)"
           :disabled="currentPage === 1"
+           width="sm"
         >
           <i class="material-icons">chevron_left</i>
         </Button>
-        <span v-for="page in totalPages" :key="page">
+
+        <!-- Páginas visíveis -->
+        <span v-for="page in visiblePages" :key="page">
           <Button
             @click="changePage(page)"
             type="outline"
             :disabled="page === currentPage"
+             width="sm"
           >
             {{ page }}
           </Button>
         </span>
+
+        <!-- Próxima página -->
         <Button
           @click="changePage(currentPage + 1)"
           :disabled="currentPage === totalPages"
+           width="sm"
         >
           <i class="material-icons">chevron_right</i>
+        </Button>
+
+        <!-- Última página -->
+        <Button
+          @click="changePage(totalPages)"
+          :disabled="currentPage === totalPages"
+           width="sm"
+        >
+          <i class="material-icons">last_page</i>
         </Button>
       </nav>
     </div>
@@ -149,146 +177,195 @@
 </template>
 
 <script setup lang="ts">
-  import request from '@/services/request'
-  import Swal from 'sweetalert2'
-  import { ref, computed } from 'vue'
+import request from '@/services/request'
+import Swal from 'sweetalert2'
+import { ref, computed, onMounted, watch } from 'vue'
+import { formatCpf, formatDate, formatCpfCnpj, formatCep, formatPhone, formatCurrency } from '@/helpers/formatters'
 
-  interface Column {
-    key: string
-    label: string
-    filterable?: boolean
-  }
+interface Column {
+  key: string
+  label: string,
+  size?: string,
+  mask?: string
+}
 
-  interface Filter {
-    key: string
-    label: string
-    placeholder?: string
-  }
+const props = defineProps<{
+  columns: Column[]
+  filters: any[]
+  advancedFilter: boolean
+  showLink?: string
+  editLink?: string
+  deleteLink?: string
+  dataLink: string
+}>()
 
-  const props = defineProps<{
-    columns: Column[]
-    data: any[]
-    isLoading: boolean
-    advancedFilter?: boolean
-    filters: Filter[]
-    showLink: string
-    editLink: string
-    deleteLink: string
-  }>()
+const currentPage = ref(1)
+const itemsPerPage = ref(10)
+const totalItems = ref(0)
+const localData = ref<any[]>([])
+const isLoading = ref(false)
+const isLoadingDelete = ref(false)
+const showAdvancedFilters = ref(false)
 
-  const globalSearch = ref('')
-  const showAdvancedFilters = ref(false)
-  const currentPage = ref(1)
-  const itemsPerPage = ref(10)
-  const isLoadingDelete = ref(false)
+const itemsPerPageOptions = [
+  { value: 5, label: '5' },
+  { value: 10, label: '10' },
+  { value: 25, label: '25' },
+  { value: 50, label: '50' },
+]
 
-  const showActions = computed(() => {
-    return props.showLink || props.editLink || props.deleteLink
-  })
+const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value))
 
-  const itemsPerPageOptions = [
-    {
-      value: 5,
-      label: '5',
-    },
-    {
-      value: 10,
-      label: '10',
-    },
-    {
-      value: 25,
-      label: '25',
-    },
-    {
-      value: 50,
-      label: '50',
-    },
-  ]
+const showActions = computed(() => {
+  return props.showLink || props.editLink || props.deleteLink
+})
 
-  // Estado para filtros ativos
-  const activeFilters = ref<Record<string, string>>({})
-
-  // Alternar filtros avançados
-  const toggleAdvancedFilters = () => {
-    showAdvancedFilters.value = !showAdvancedFilters.value
-  }
-
-  // Aplicar filtros sem armazenar localmente
-  const applyFilter = (key: string, value: string) => {
-    activeFilters.value[key] = value
-  }
-
-  // Filtrar os dados com base na busca global e filtros ativos
-  const filteredData = computed(() => {
-    return props.data.filter((item) => {
-      // Busca global
-      const matchesGlobalSearch = Object.values(item)
-        .join(' ')
-        .toLowerCase()
-        .includes(globalSearch.value.toLowerCase())
-
-      // Filtros avançados
-      const matchesFilters = Object.keys(activeFilters.value).every((key) => {
-        return (
-          activeFilters.value[key] === undefined ||
-          activeFilters.value[key] === '' ||
-          item[key]
-            ?.toString()
-            .toLowerCase()
-            .includes(activeFilters.value[key].toLowerCase())
-        )
+const loadInfo = async () => {
+  if (!props.dataLink) return
+  isLoading.value = true
+  localData.value = []
+  totalItems.value = 0
+  try {
+    const optionsFilters = [...props.filters]
+    let filters = ''
+    if (optionsFilters.length > 0) {
+      optionsFilters.forEach((filter) => {
+        if (filter.value === null || typeof filter.value === 'undefined') return
+        filters += `&${filter.key}=${filter.value}`
       })
-
-      return matchesGlobalSearch && matchesFilters
-    })
-  })
-
-  // Paginação
-  const totalPages = computed(() =>
-    Math.ceil(filteredData.value.length / itemsPerPage.value)
-  )
-  const paginatedData = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage.value
-    const end = start + itemsPerPage.value
-    return filteredData.value.slice(start, end)
-  })
-
-  // Trocar página
-  const changePage = (page: number) => {
-    if (page > 0 && page <= totalPages.value) {
-      currentPage.value = page
     }
+
+    const response = await request.get(`${props.dataLink}?page=${currentPage.value}&itemsPerPage=${itemsPerPage.value}${filters}`)
+    if (response.status === 200) {
+      localData.value = response.data.data || []
+      totalItems.value = response.data.total || 0
+    }
+  } catch (error) {
+    console.error('Erro ao carregar os dados:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const visiblePages = computed(() => {
+  const pagesToShow = 5
+  const half = Math.floor(pagesToShow / 2)
+
+  let start = currentPage.value - half
+  let end = currentPage.value + half
+
+  if (start < 1) {
+    start = 1
+    end = pagesToShow
   }
 
-  const deleteItem = async (id: number) => {
-    Swal.fire({
-      title: 'Tem certeza?',
-      text: 'Deseja excluir o item #' + id + '?',
-      icon: 'warning',
-      showCancelButton: true,
-      showConfirmButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sim, excluir!',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        isLoadingDelete.value = true
-        await request.delete(props.deleteLink + id)
-        isLoadingDelete.value = false
-
-        if (result.isConfirmed) {
-          await Swal.fire({
-            icon: 'success',
-            title: 'Sucesso!',
-            text: 'Item excluido com sucesso.',
-            showConfirmButton: true,
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#3085d6',
-          })
-
-          window.location.reload()
-        }
-      }
-    })
+  if (end > totalPages.value) {
+    end = totalPages.value
+    start = totalPages.value - pagesToShow + 1
+    if (start < 1) start = 1
   }
+
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i)
+})
+
+const changePage = (page: number) => {
+  if (page > 0 && page <= totalPages.value) {
+    currentPage.value = page
+    loadInfo()
+  }
+}
+
+const deleteItem = async (id: number) => {
+  Swal.fire({
+    title: 'Tem certeza?',
+    text: `Deseja excluir o item #${id}?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sim, excluir!',
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      isLoadingDelete.value = true
+      await request.delete(props.deleteLink + id)
+      isLoadingDelete.value = false
+
+      //Swal.fire('Sucesso!', 'Item excluído com sucesso.', 'success')
+      Swal.fire({
+        icon: 'success',
+        title: 'Sucesso!',
+        text: 'Item excluído com sucesso.',
+        showConfirmButton: true,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#3085d6',
+        timer: 3000,
+      })
+      loadInfo()
+    }
+  })
+}
+
+const applyMask = (value: string, mask: string) => {
+  if (!value) return ''
+  switch (mask) {
+    case 'cpf':
+      return formatCpf(value)
+    case 'date':
+      return formatDate(value)
+    case 'cpfCnpj':
+      return formatCpfCnpj(value)
+    case 'cep':
+      return formatCep(value)
+    case 'phone':
+      return formatPhone(value)
+    case 'currency':
+      return formatCurrency(Number(value))
+    default:
+      return value
+  }
+}
+
+const toggleAdvancedFilters = () => {
+  showAdvancedFilters.value = !showAdvancedFilters.value
+}
+
+const clearFilters = () => {
+  props.filters.forEach((filter) => {
+    filter.value = null
+  })
+  loadInfo()
+}
+
+const applyFilters = () => {
+  currentPage.value = 1
+  loadInfo()
+}
+
+watch(itemsPerPage, () => {
+  currentPage.value = 1
+  loadInfo()
+})
+
+onMounted(() => {
+  loadInfo()
+})
 </script>
+
+<style scoped>
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>

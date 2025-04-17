@@ -9,7 +9,8 @@
       v-model:filters="filters"
       :columns="columns"
       :data="usuarios"
-      :advanced-filter="true"
+      :advanced-filter="false"
+      :data-link="'/usuarios'"
       :is-loading="isLoading"
     />
   </div>
@@ -17,12 +18,11 @@
 
 <script setup lang="ts">
   import DataTable from '@/components/DataTable.vue'
-  import request from '@/services/request'
-  import { onMounted, ref } from 'vue'
+  import { ref } from 'vue'
 
   const filters = ref([
-    { key: 'id', label: 'ID', placeholder: 'Filtrar por ID' },
-    { key: 'nome', label: 'Nome', placeholder: 'Filtrar por Nome' },
+    //{ key: 'id', label: 'ID', placeholder: 'Filtrar por ID' },
+    //{ key: 'nome', label: 'Nome', placeholder: 'Filtrar por Nome' },
   ])
 
   const columns = [
@@ -34,23 +34,4 @@
 
   const usuarios = ref([])
   const isLoading = ref(true)
-
-  const loadInfo = async () => {
-    try {
-      isLoading.value = true
-      const response = await request.get('/usuarios')
-
-      if (response.status === 200) {
-        usuarios.value = response.data
-      }
-    } catch (error) {
-      console.error('Erro ao carregar os usuarios:', error)
-    } finally {
-      isLoading.value = false
-    }
-  }
-
-  onMounted(() => {
-    loadInfo()
-  })
 </script>

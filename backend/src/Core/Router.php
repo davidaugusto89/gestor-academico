@@ -46,18 +46,23 @@ class Router
                 $reflection = new \ReflectionMethod($controller, $methodName);
                 $paramCount = $reflection->getNumberOfParameters();
 
+                // Entrada via corpo (POST, PUT)
                 $input = json_decode(file_get_contents('php://input'), true) ?? [];
 
-                if ($paramCount > 0) {
-                    $args = $matches;
-                    if ($paramCount > count($matches)) {
-                        $args[] = $input;
-                    }
-                    $controller->$methodName(...$args);
-                } else {
-                    $controller->$methodName();
+                // Entrada via query string (GET)
+                $queryParams = $_GET;
+
+                $args = $matches;
+
+                if ($method === 'GET' && $paramCount > count($matches)) {
+                    // Se for GET e o método do controller espera mais argumentos, injeta $_GET
+                    $args[] = $queryParams;
+                } elseif ($method !== 'GET' && $paramCount > count($matches)) {
+                    // Para POST, PUT, etc: injeta corpo JSON
+                    $args[] = $input;
                 }
 
+                $controller->$methodName(...$args);
                 return true;
             }
         }

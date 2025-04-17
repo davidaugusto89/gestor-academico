@@ -8,7 +8,7 @@ use App\Core\Exceptions\NotFoundException;
 class Service
 {
     public function __construct(
-        private Repository $repository,
+        private Repository $repositorio,
         private Validator $validator
     ) {}
 
@@ -16,7 +16,7 @@ class Service
     {
         $this->validator->validar($dto);
 
-        if ($this->repository->existeComMesmoNome($dto->getNome())) {
+        if ($this->repositorio->existeComMesmoNome($dto->getNome())) {
             throw new TurmaJaExisteException("Turma '{$dto->getNome()}' já existe.");
         }
 
@@ -25,17 +25,17 @@ class Service
             $dto->getDescricao()
         );
 
-        $this->repository->criar($entity);
+        $this->repositorio->criar($entity);
     }
 
-    public function listarTodos(string $colunaOrdenacao = 'nome'): array
+    public function listarTodos(array $params, string $ordem = 'nome:asc'): array
     {
-        return $this->repository->listarTodos($colunaOrdenacao);
+        return $this->repositorio->listarTodos($params, $ordem, Filter::camposPermitidos());
     }
 
     public function buscarPorId(int $id): Entity
     {
-        $entity = $this->repository->buscarPorId($id);
+        $entity = $this->repositorio->buscarPorId($id);
         if (!$entity) {
             throw new NotFoundException("Turma {$id} não encontrada.");
         }
@@ -45,7 +45,7 @@ class Service
 
     public function buscarPorNome(string $nome): array
     {
-        return $this->repository->buscarPorNome($nome);
+        return $this->repositorio->buscarPorNome($nome);
     }
 
 
@@ -53,19 +53,19 @@ class Service
     {
         $this->validator->validar($dados);
 
-        $entity = $this->repository->buscarPorId($id);
+        $entity = $this->repositorio->buscarPorId($id);
         if (!$entity) {
             throw new NotFoundException("Turma {$id} não encontrada.");
         }
 
-        if ($this->repository->existeComMesmoNome($dados->getNome(), $id)) {
+        if ($this->repositorio->existeComMesmoNome($dados->getNome(), $id)) {
             throw new TurmaJaExisteException("Turma '{$dados->getNome()}' já existe.");
         }
 
         $entity->setNome($dados->getNome());
         $entity->setDescricao($dados->getDescricao());
 
-        $this->repository->atualizar($id, [
+        $this->repositorio->atualizar($id, [
             'nome'       => $entity->getNome(),
             'descricao'  => $entity->getDescricao(),
         ]);
@@ -73,11 +73,11 @@ class Service
 
     public function remover(int $id): void
     {
-        $entity = $this->repository->buscarPorId($id);
+        $entity = $this->repositorio->buscarPorId($id);
         if (!$entity) {
             throw new NotFoundException("Turma {$id} não encontrada.");
         }
 
-        $this->repository->remover($id);
+        $this->repositorio->remover($id);
     }
 }

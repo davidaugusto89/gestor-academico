@@ -129,7 +129,7 @@ const alertError = (message: string) => {
 const handleRequestError = (error: any) => {
   if (error.response) {
     // Erros de resposta do servidor
-    alertError(error.response.data.error || error.response.data.erro || 'Erro inesperado no servidor.')
+    alertError(error.response.data.error || 'Erro inesperado no servidor.')
   } else if (error.request) {
     // Sem resposta do servidor
     alertError('Erro de conexão. Verifique sua internet.')

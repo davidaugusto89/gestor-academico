@@ -76,7 +76,9 @@
       case 'md':
         return 'btn-md text-md'
       case 'sm':
-        return 'btn-sm text-sm'
+        return 'btn-sm text-sm p-2 text-sm'
+      case 'xs':
+        return 'text-xs px-2 py-1'
       default:
         return ''
     }

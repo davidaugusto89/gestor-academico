@@ -5,6 +5,7 @@ namespace App\Domain\Aluno;
 use App\Domain\Aluno\Exceptions\AlunoJaExisteException;
 use App\Core\Exceptions\NotFoundException;
 use App\Support\PasswordManager;
+use App\Domain\Aluno\Filter;
 
 class Service
 {
@@ -33,9 +34,9 @@ class Service
         $this->repositorio->criar($aluno);
     }
 
-    public function listarTodos(): array
+    public function listarTodos(array $params, string $ordem): array
     {
-        return $this->repositorio->listarTodos('nome');
+        return $this->repositorio->listarTodos($params, $ordem, Filter::camposPermitidos());
     }
 
     public function buscarPorId(int $id): Entity
@@ -51,6 +52,10 @@ class Service
 
     public function buscarPorNome(string $nome): array
     {
+        if (strlen($nome) < 3) {
+            throw new NotFoundException('Nome deve ter pelo menos 3 caracteres.');
+        }
+
         return $this->repositorio->buscarPorNome($nome);
     }
 
