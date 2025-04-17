@@ -9,7 +9,7 @@
       v-model:filters="filters"
       :columns="columns"
       :data="usuarios"
-      :advanced-filter="false"
+      :advanced-filter="true"
       :data-link="'/usuarios'"
       :is-loading="isLoading"
     />
@@ -21,8 +21,8 @@
   import { ref } from 'vue'
 
   const filters = ref([
-    //{ key: 'id', label: 'ID', placeholder: 'Filtrar por ID' },
-    //{ key: 'nome', label: 'Nome', placeholder: 'Filtrar por Nome' },
+    { key: 'id', label: 'ID', placeholder: 'Filtrar por ID' },
+    { key: 'nome', label: 'Nome', placeholder: 'Filtrar por Nome' },
   ])
 
   const columns = [

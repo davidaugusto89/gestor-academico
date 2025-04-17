@@ -39,7 +39,7 @@ class RepositoryImpl extends BaseRepository implements Repository
             foreach ($params as $key => $value) {
                 if (in_array($key, $camposPermitidos) && $value !== null) {
                     switch ($key) {
-                        case 'name':
+                        case 'nome':
                             $where .= " AND t.{$key} LIKE :{$key}";
                             $binds[":{$key}"] = "%{$value}%";
                             break;

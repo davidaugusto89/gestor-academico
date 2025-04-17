@@ -44,8 +44,8 @@ abstract class BaseRepository
             foreach ($params as $key => $value) {
                 if (in_array($key, $camposPermitidos) && $value !== null) {
                     switch ($key) {
-                        case 'name':
-                            $where .= " AND {$key} LIKE :name";
+                        case 'nome':
+                            $where .= " AND {$key} LIKE :{$key}";
                             break;
                         default:
                             $where .= " AND {$key} = :{$key}";
