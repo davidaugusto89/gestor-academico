@@ -38,7 +38,4 @@
     { key: 'nome', label: 'Nome' },
     { key: 'total_alunos', label: 'Total de alunos' },
   ]
-
-  const turmas = ref([])
-  const isLoading = ref(true)
 </script>

@@ -1,44 +1,54 @@
 <template>
   <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
     <!-- Loading -->
+
     <div
-      v-if="props.dataLink ? isLoadingInternal : props.isLoading"
+      v-if="dataLink ? isLoadingInternal : isLoading"
       class="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 z-10"
     >
       <div class="loader">Carregando...</div>
     </div>
 
     <!-- Filtros Avançados -->
-    <div
-      v-if="showAdvancedFilters"
-      class="flex flex-wrap gap-3 bg-gray-50 p-4 rounded-lg items-end"
-    >
-      <strong class="text-gray-700 w-full">Filtros:</strong>
-      <div
-        v-for="filter in filters"
-        :key="filter.key"
-        class="flex-1 min-w-[200px]"
-      >
-        <Input
-          type="text"
-          :id="filter.key"
-          v-model="filter.value"
-          :placeholder="filter.placeholder"
-          width="full"
-          :label="filter.label"
-        />
-      </div>
+    <div v-if="showAdvancedFilters" class="bg-gray-50 p-4 rounded-lg">
+      <strong class="text-gray-700 w-full mb-4 block">Filtros:</strong>
 
-      <div class="flex mb-4">
-        <Button type="outline" @click="clearFilters">Limpar Filtros</Button>
-      </div>
+      <div class="flex flex-wrap gap-3 items-end">
+        <div
+          v-for="filter in filters"
+          :key="filter.key"
+          class="flex-1 min-w-[200px]"
+        >
+          <Select
+            v-if="filter?.type === 'select'"
+            id="aluno"
+            :label="filter.label"
+            :options="filter.options"
+            v-model="filter.value"
+          />
+          <Input
+            v-else
+            type="text"
+            :id="filter.key"
+            v-model="filter.value"
+            :placeholder="filter.placeholder"
+            width="full"
+            :label="filter.label"
+          />
+        </div>
 
-      <div class="flex mb-4">
-        <Button type="primary" @click="applyFilters">Aplicar Filtros</Button>
+        <!-- Botões na mesma linha dos filtros, alinhados pela base -->
+        <div class="flex mb-0 self-end">
+          <Button type="outline" @click="clearFilters">Limpar Filtros</Button>
+        </div>
+
+        <div class="flex mb-0 self-end">
+          <Button type="primary" @click="applyFilters">Aplicar Filtros</Button>
+        </div>
       </div>
     </div>
 
-    <hr v-if="showAdvancedFilters" class="mx-4 mt-0 mb-4 border-gray-300" />
+    <hr v-if="showAdvancedFilters" class="m-4 border-gray-300" />
 
     <!-- Tabela responsiva -->
     <div class="overflow-x-auto">
@@ -135,7 +145,7 @@
       />
 
       <span class="text-sm text-gray-700 dark:text-gray-400">
-        Mostrando {{ currentPage * itemsPerPage }} de {{ totalItems }} itens
+        Mostrando {{ localData.length }} de {{ totalItems }} itens
       </span>
 
       <nav class="inline-flex flex-wrap gap-2">
@@ -199,6 +209,7 @@
     formatPhone,
     formatCurrency,
   } from '@/helpers/formatters'
+  import Select from './global/Select.vue'
 
   interface Column {
     key: string
@@ -214,7 +225,7 @@
     showLink?: string
     editLink?: string
     deleteLink?: string
-    dataLink?: string,
+    dataLink?: string
     customDelete?: string
   }>()
 
@@ -238,7 +249,9 @@
   )
 
   const showActions = computed(() => {
-    return props.showLink || props.editLink || props.deleteLink || props.customDelete
+    return (
+      props.showLink || props.editLink || props.deleteLink || props.customDelete
+    )
   })
 
   const loadInfo = async () => {
@@ -335,7 +348,7 @@
     }
   }
 
-  const deleteMatricula = async (item : any) => {
+  const deleteMatricula = async (item: any) => {
     Swal.fire({
       title: 'Tem certeza?',
       text: `Deseja excluir a matricula do aluno ${item.aluno_nome} na turma ${item.turma_nome}?`,
@@ -349,7 +362,7 @@
         isLoadingDelete.value = true
         const data = {
           aluno_id: item.aluno_id,
-          turma_id: item.turma_id
+          turma_id: item.turma_id,
         }
 
         await request.delete('/matriculas', { data: data })

@@ -35,7 +35,9 @@
             <span class="block text-sm font-medium text-gray-700">
               Total de Matrículas
             </span>
-            <p class="text-3xl font-bold text-gray-900">{{ totalMatriculas }}</p>
+            <p class="text-3xl font-bold text-gray-900">
+              {{ totalMatriculas }}
+            </p>
           </div>
           <span class="material-icons text-green-500 text-4xl">person_add</span>
         </div>
@@ -193,19 +195,24 @@
   const alunos = ref([
     {
       id: 1,
-      nome: "João da Silva",
-      cpf: "123.456.789-01",
-      dataNascimento: "2000-01-01",
-      email: "joao.silva@email.com",
+      nome: 'João da Silva',
+      cpf: '123.456.789-01',
+      dataNascimento: '2000-01-01',
+      email: 'joao.silva@email.com',
     },
     // Adicionar mais alunos mockados
   ])
   const turmas = ref([
-    { id: 1, nome: "Turma A", descricao: "Turma de Introdução" },
+    { id: 1, nome: 'Turma A', descricao: 'Turma de Introdução' },
     // Adicionar mais turmas mockadas
   ])
   const matriculas = ref([
-    { id: 1, alunoNome: "João da Silva", turmaNome: "Turma A", dataMatricula: "2025-04-01" },
+    {
+      id: 1,
+      alunoNome: 'João da Silva',
+      turmaNome: 'Turma A',
+      dataMatricula: '2025-04-01',
+    },
     // Adicionar mais matrículas mockadas
   ])
 
