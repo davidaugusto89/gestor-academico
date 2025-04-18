@@ -91,8 +91,8 @@ const request = {
    * @returns {Promise<AxiosResponse<any>>} - Resposta da requisi o.
    * @throws {any} - Repropaga o erro lan ado pela requisi o.
    */
-  delete: async (url: string) => {
-    return api.delete(url)
+  delete: async (url: string, data?: object) => {
+    return api.delete(url, data)
   },
 }
 

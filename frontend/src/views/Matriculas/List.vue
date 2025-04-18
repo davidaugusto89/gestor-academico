@@ -15,7 +15,8 @@
       :columns="columns"
       :advanced-filter="false"
       :data-link="'/matriculas'"
-      :delete-link="'/clientes/'"
+      :delete-link="'/matriculas/'"
+      custom-delete="deleteMatricula"
     />
   </div>
 </template>

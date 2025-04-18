@@ -96,11 +96,23 @@
               >
                 Editar
               </Button>
+              <!-- Botão de exclusão com função personalizada -->
               <Button
                 type="danger"
                 width="small"
                 icon="delete"
-                v-if="deleteLink"
+                v-if="customDelete"
+                @click="customDelete(item)"
+                :is-loading="isLoadingDelete"
+              >
+                Excluir
+              </Button>
+              <!-- Botão de exclusão com link padrão -->
+              <Button
+                type="danger"
+                width="small"
+                icon="delete"
+                v-if="deleteLink && !customDelete"
                 @click="deleteItem(item.id)"
                 :is-loading="isLoadingDelete"
               >
@@ -202,7 +214,8 @@
     showLink?: string
     editLink?: string
     deleteLink?: string
-    dataLink?: string
+    dataLink?: string,
+    customDelete?: string
   }>()
 
   const currentPage = ref(1)
@@ -225,7 +238,7 @@
   )
 
   const showActions = computed(() => {
-    return props.showLink || props.editLink || props.deleteLink
+    return props.showLink || props.editLink || props.deleteLink || props.customDelete
   })
 
   const loadInfo = async () => {
@@ -286,6 +299,7 @@
     }
   }
 
+  // Função de exclusão padrão
   const deleteItem = async (id: number) => {
     Swal.fire({
       title: 'Tem certeza?',
@@ -301,7 +315,47 @@
         await request.delete(props.deleteLink + id)
         isLoadingDelete.value = false
 
-        //Swal.fire('Sucesso!', 'Item excluído com sucesso.', 'success')
+        Swal.fire({
+          icon: 'success',
+          title: 'Sucesso!',
+          text: 'Item excluído com sucesso.',
+          showConfirmButton: true,
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#3085d6',
+          timer: 3000,
+        })
+        loadInfo()
+      }
+    })
+  }
+
+  const customDelete = async (item: any) => {
+    if (props.customDelete === 'deleteMatricula') {
+      await deleteMatricula(item)
+    }
+  }
+
+  const deleteMatricula = async (item : any) => {
+    Swal.fire({
+      title: 'Tem certeza?',
+      text: `Deseja excluir a matricula do aluno ${item.aluno_nome} na turma ${item.turma_nome}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sim, excluir!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        isLoadingDelete.value = true
+        const data = {
+          aluno_id: item.aluno_id,
+          turma_id: item.turma_id
+        }
+
+        await request.delete('/matriculas', { data: data })
+
+        isLoadingDelete.value = false
+
         Swal.fire({
           icon: 'success',
           title: 'Sucesso!',
@@ -334,10 +388,6 @@
       default:
         return value
     }
-  }
-
-  const toggleAdvancedFilters = () => {
-    showAdvancedFilters.value = !showAdvancedFilters.value
   }
 
   const clearFilters = () => {
