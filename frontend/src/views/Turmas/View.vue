@@ -26,11 +26,16 @@
           </div>
         </div>
 
-         <!-- Alunos Matriculados -->
+        <!-- Alunos Matriculados -->
         <div class="bg-white mt-3">
-          <h2 class="text-md font-bold mb-4">Alunos Matriculados ({{ dataAlunos.length }})</h2>
+          <h2 class="text-md font-bold mb-4">
+            Alunos Matriculados ({{ dataAlunos.length }})
+          </h2>
 
-          <table class="min-w-full table-auto border border-gray-200" v-if="dataAlunos.length > 0">
+          <table
+            class="min-w-full table-auto border border-gray-200"
+            v-if="dataAlunos.length > 0"
+          >
             <thead class="bg-gray-100">
               <tr>
                 <th class="text-left px-4 py-2 border-b">Nome</th>
@@ -39,7 +44,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(aluno, index) in dataAlunos" :key="index" class="hover:bg-gray-50">
+              <tr
+                v-for="(aluno, index) in dataAlunos"
+                :key="index"
+                class="hover:bg-gray-50"
+              >
                 <td class="px-4 py-2 border-b">{{ aluno.nome }}</td>
                 <td class="px-4 py-2 border-b">{{ aluno.email }}</td>
                 <td class="px-4 py-2 border-b">{{ formatCpf(aluno.cpf) }}</td>
@@ -47,7 +56,9 @@
             </tbody>
           </table>
 
-          <p v-if="dataAlunos.length === 0" class="text-gray-500 mt-4">Nenhum aluno matriculado nesta turma.</p>
+          <p v-if="dataAlunos.length === 0" class="text-gray-500 mt-4">
+            Nenhum aluno matriculado nesta turma.
+          </p>
         </div>
       </div>
     </div>
@@ -59,7 +70,6 @@
   import { useRoute } from 'vue-router'
   import request from '@/services/request'
   import { formatCpf } from '@/helpers/formatters'
-
 
   const formatDate = (value: string) => {
     if (!value) return ''

@@ -75,12 +75,12 @@ services:
       - backend
       - frontend
 
-  mailhog:
-    container_name: gestor-academico-mailhog
-    image: mailhog/mailhog
-    ports:
-      - "1025:1025"
-      - "8025:8025"
+  # mailhog:
+  #   container_name: gestor-academico-mailhog
+  #   image: mailhog/mailhog
+  #   ports:
+  #     - "1025:1025"
+  #     - "8025:8025"
 
 volumes:
   dbdata:

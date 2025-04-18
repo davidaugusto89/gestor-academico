@@ -81,7 +81,9 @@
   // Computed para classes dinâmicas
   const error = computed(() => props.errorMessage !== '')
   const containerClasses = computed(() => {
-    return props.width.startsWith('w-') ? `${props.width} mb-4` : `w-${props.width} mb-4`
+    return props.width.startsWith('w-')
+      ? `${props.width} mb-4`
+      : `w-${props.width} mb-4`
   })
 
   const inputClasses = computed(

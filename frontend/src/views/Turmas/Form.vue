@@ -1,10 +1,6 @@
 <template>
   <div class="relative overflow-x-auto sm:rounded-lg">
-    <Header
-      :title="title"
-      :title-previous="'Turmas'"
-      :route-back="'/turmas'"
-    />
+    <Header :title="title" :title-previous="'Turmas'" :route-back="'/turmas'" />
 
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
       <form @submit.prevent="handleFormSubmit" class="space-y-6">

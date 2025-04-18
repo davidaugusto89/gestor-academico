@@ -13,7 +13,7 @@
       :class="[
         'bg-[#2C5364] text-white flex flex-col shadow-lg h-full w-60 z-40 transition-transform duration-300 md:relative',
         isOpen ? 'translate-x-0 fixed' : 'translate-x-[-100%] fixed',
-        'md:translate-x-0 md:block'
+        'md:translate-x-0 md:block',
       ]"
     >
       <!-- Logo -->
@@ -29,9 +29,17 @@
             <router-link
               to="/dashboard"
               class="group flex items-center py-2 px-4 rounded-lg transition-all duration-300 hover:bg-white/10 hover:pl-5"
-              :class="$route.name === 'Dashboard' ? 'bg-white/10 border-l-4 border-white pl-5' : ''"
+              :class="
+                $route.name === 'Dashboard'
+                  ? 'bg-white/10 border-l-4 border-white pl-5'
+                  : ''
+              "
             >
-              <i class="material-icons text-lg group-hover:scale-110 transition-transform">home</i>
+              <i
+                class="material-icons text-lg group-hover:scale-110 transition-transform"
+              >
+                home
+              </i>
               <span class="ml-2 font-medium">Página Inicial</span>
             </router-link>
           </li>
@@ -41,9 +49,17 @@
             <router-link
               to="/alunos"
               class="group flex items-center py-2 px-4 rounded-lg transition-all duration-300 hover:bg-white/10 hover:pl-5"
-              :class="$route.name?.startsWith('Alunos') ? 'bg-white/10 border-l-4 border-white pl-5' : ''"
+              :class="
+                $route.name?.startsWith('Alunos')
+                  ? 'bg-white/10 border-l-4 border-white pl-5'
+                  : ''
+              "
             >
-              <i class="material-icons text-lg group-hover:scale-110 transition-transform">school</i>
+              <i
+                class="material-icons text-lg group-hover:scale-110 transition-transform"
+              >
+                school
+              </i>
               <span class="ml-2 font-medium">Alunos</span>
             </router-link>
           </li>
@@ -53,9 +69,17 @@
             <router-link
               to="/turmas"
               class="group flex items-center py-2 px-4 rounded-lg transition-all duration-300 hover:bg-white/10 hover:pl-5"
-              :class="$route.name?.startsWith('Turmas') ? 'bg-white/10 border-l-4 border-white pl-5' : ''"
+              :class="
+                $route.name?.startsWith('Turmas')
+                  ? 'bg-white/10 border-l-4 border-white pl-5'
+                  : ''
+              "
             >
-              <i class="material-icons text-lg group-hover:scale-110 transition-transform">class</i>
+              <i
+                class="material-icons text-lg group-hover:scale-110 transition-transform"
+              >
+                class
+              </i>
               <span class="ml-2 font-medium">Turmas</span>
             </router-link>
           </li>
@@ -65,9 +89,17 @@
             <router-link
               to="/matriculas"
               class="group flex items-center py-2 px-4 rounded-lg transition-all duration-300 hover:bg-white/10 hover:pl-5"
-              :class="$route.name?.startsWith('Matriculas') ? 'bg-white/10 border-l-4 border-white pl-5' : ''"
+              :class="
+                $route.name?.startsWith('Matriculas')
+                  ? 'bg-white/10 border-l-4 border-white pl-5'
+                  : ''
+              "
             >
-              <i class="material-icons text-lg group-hover:scale-110 transition-transform">how_to_reg</i>
+              <i
+                class="material-icons text-lg group-hover:scale-110 transition-transform"
+              >
+                how_to_reg
+              </i>
               <span class="ml-2 font-medium">Matrículas</span>
             </router-link>
           </li>
@@ -77,9 +109,17 @@
             <router-link
               to="/usuarios"
               class="group flex items-center py-2 px-4 rounded-lg transition-all duration-300 hover:bg-white/10 hover:pl-5"
-              :class="$route.name?.startsWith('Usuarios') ? 'bg-white/10 border-l-4 border-white pl-5' : ''"
+              :class="
+                $route.name?.startsWith('Usuarios')
+                  ? 'bg-white/10 border-l-4 border-white pl-5'
+                  : ''
+              "
             >
-              <i class="material-icons text-lg group-hover:scale-110 transition-transform">manage_accounts</i>
+              <i
+                class="material-icons text-lg group-hover:scale-110 transition-transform"
+              >
+                manage_accounts
+              </i>
               <span class="ml-2 font-medium">Usuários</span>
             </router-link>
           </li>
@@ -91,7 +131,11 @@
               class="group flex items-center py-2 px-4 rounded-lg transition-all duration-300 hover:bg-red-600"
               active-class="bg-red-600"
             >
-              <i class="material-icons text-lg group-hover:scale-110 transition-transform">logout</i>
+              <i
+                class="material-icons text-lg group-hover:scale-110 transition-transform"
+              >
+                logout
+              </i>
               <span class="ml-2 font-medium">Sair</span>
             </router-link>
           </li>
@@ -108,7 +152,9 @@
 
     <!-- Conteúdo Principal -->
     <div class="flex-1 flex flex-col internal-container">
-      <header class="h-16 bg-gray-100 border-b flex items-center px-6 justify-between">
+      <header
+        class="h-16 bg-gray-100 border-b flex items-center px-6 justify-between"
+      >
         <h1 class="text-lg font-semibold text-gray-800">Olá, {{ nome }}!</h1>
       </header>
 
@@ -116,22 +162,26 @@
         <router-view />
       </main>
 
-      <footer class="h-16 bg-gray-100 border-t flex items-center justify-center">
-        <p class="text-sm text-gray-600">© 2025 - Desenvolvido por David Augusto</p>
+      <footer
+        class="h-16 bg-gray-100 border-t flex items-center justify-center"
+      >
+        <p class="text-sm text-gray-600">
+          © 2025 - Desenvolvido por David Augusto
+        </p>
       </footer>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useAuthStore } from '@/stores/authStore'
+  import { ref } from 'vue'
+  import { useAuthStore } from '@/stores/authStore'
 
-const authStore = useAuthStore()
-const nome = authStore.usuario?.nome ?? ''
-const isOpen = ref(false)
+  const authStore = useAuthStore()
+  const nome = authStore.usuario?.nome ?? ''
+  const isOpen = ref(false)
 
-const toggleMenu = () => {
-  isOpen.value = !isOpen.value
-}
+  const toggleMenu = () => {
+    isOpen.value = !isOpen.value
+  }
 </script>

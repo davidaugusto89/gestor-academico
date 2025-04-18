@@ -20,19 +20,21 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
+            <label class="block text-sm font-medium text-gray-700">
+              Data de Nascimento
+            </label>
             <p class="text-gray-900">{{ formattedDate }}</p>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">
-              CPF
-            </label>
+            <label class="block text-sm font-medium text-gray-700">CPF</label>
             <p class="text-gray-900">{{ formattedCpf }}</p>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">E-mail</label>
+            <label class="block text-sm font-medium text-gray-700">
+              E-mail
+            </label>
             <p class="text-gray-900">{{ data.email }}</p>
           </div>
         </div>
@@ -46,7 +48,7 @@
   import { useRoute } from 'vue-router'
   import request from '@/services/request'
   import { formatCpf, formatDate } from '@/helpers/formatters'
-  
+
   // Computed para obter o ID do aluno
   const route = useRoute()
   const alunoId = computed(() => route.params.id as string | null)
