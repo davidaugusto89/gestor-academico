@@ -7,34 +7,35 @@ import {
   validatePasswordStrong,
 } from '@/helpers/validations'
 
+interface ValidationRules {
+  required?: boolean
+  minLength?: number
+  maxLength?: number
+  length?: number
+  min?: number
+  max?: number
+  type?: keyof typeof validationHelpers
+  custom?: (value: string | number) => boolean
+}
+
+const validationHelpers = {
+  cpf: validateCPF,
+  cnpj: validateCNPJ,
+  email: validateEmail,
+  Telefone: validateTelefone,
+  passwordStrong: validatePasswordStrong,
+  'CPF/CNPJ': (value: string) => validateCPF(value) || validateCNPJ(value),
+}
+
 export function useValidation() {
   const errors = ref<Record<string, string>>({})
-
-  const validationHelpers: Record<string, (value: string) => boolean> = {
-    cpf: validateCPF,
-    cnpj: validateCNPJ,
-    email: validateEmail,
-    Telefone: validateTelefone,
-    passwordStrong: validatePasswordStrong,
-    'CPF/CNPJ': (value: string) => validateCPF(value) || validateCNPJ(value),
-  }
 
   const validate = (
     field: string,
     value: string | number,
-    rules: {
-      required?: boolean
-      minLength?: number
-      maxLength?: number
-      length?: number
-      min?: number
-      max?: number
-      type?: string
-      custom?: (value: string | number) => boolean
-    }
+    rules: ValidationRules
   ) => {
     const newErrors = { ...errors.value }
-
     const stringValue = String(value).trim()
 
     if (rules.required && !stringValue) {
@@ -57,7 +58,6 @@ export function useValidation() {
 
     if (rules.type && validationHelpers[rules.type]) {
       const isValid = validationHelpers[rules.type](stringValue)
-
       if (!isValid) {
         newErrors[field] =
           rules.type === 'passwordStrong'

@@ -11,6 +11,8 @@ interface Repository
      */
     public function matricular(Entity $matricula): void;
 
+    public function listarTodos(array $params, string $ordem, ?array $camposPermitidos): array;
+
     public function listarPorTurma(int $turmaId): array;
 
     public function alunoJaMatriculado(int $alunoId, int $turmaId): bool;

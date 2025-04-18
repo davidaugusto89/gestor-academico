@@ -161,12 +161,12 @@ interface Column {
 
 const props = defineProps<{
   columns: Column[]
-  filters: any[]
+  filters?: any[]
   advancedFilter: boolean
   showLink?: string
   editLink?: string
   deleteLink?: string
-  dataLink: string
+  dataLink?: string
 }>()
 
 const currentPage = ref(1)

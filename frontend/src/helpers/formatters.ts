@@ -5,6 +5,9 @@ export const formatCpf = (value: string): string => {
 
 export const formatDate = (value: string): string => {
   if (!value) return ''
+  if (value.length !== 10) {
+    value = value.slice(0, 10)
+  }
   const [year, month, day] = value.split('-')
   return `${day}/${month}/${year}`
 }

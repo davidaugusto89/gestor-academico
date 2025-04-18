@@ -3,6 +3,7 @@
 namespace App\Domain\Matricula;
 
 use App\Core\Database;
+use App\Core\QueryBuilderHelper;
 use PDO;
 
 class RepositoryImpl implements Repository
@@ -44,6 +45,40 @@ class RepositoryImpl implements Repository
         return (int) $stmt->fetchColumn() > 0;
     }
 
+    public function listarTodos(array $params, string $ordem = 'data_matricula:desc', ?array $camposPermitidos = null): array
+    {
+        $sql = "
+            SELECT a.nome AS aluno_nome, a.cpf AS aluno_cpf, t.nome AS turma_nome, m.*
+            FROM matriculas m
+            JOIN alunos a ON m.aluno_id = a.id
+            JOIN turmas t ON m.turma_id = t.id
+        ";
+
+        return QueryBuilderHelper::paginarResultado(
+            $this->pdo,
+            $sql,
+            $params,
+            Filter::camposPermitidos(),
+            $ordem,
+            'm',
+            function ($row) {
+                $entidade = $this->mapearParaEntidade($row);
+
+                return [
+                    'aluno_id' => $entidade->getAlunoId(),
+                    'aluno_nome' => $row['aluno_nome'],
+                    'aluno_cpf' => $row['aluno_cpf'],
+
+                    'turma_id' => $entidade->getTurmaId(),
+                    'turma_nome' => $row['turma_nome'],
+
+                    'data_matricula' => $entidade->getDataMatricula(),
+
+                ];
+            }
+        );
+    }
+
     public function listarPorTurma(int $turmaId): array
     {
         $stmt = $this->pdo->prepare("
@@ -69,5 +104,19 @@ class RepositoryImpl implements Repository
             ':aluno_id' => $matricula->getAlunoId(),
             ':turma_id' => $matricula->getTurmaId(),
         ]);
+    }
+
+    private function mapearParaEntidade(array $row): Entity
+    {
+        if (is_null($row['aluno_id']) || is_null($row['turma_id'])) {
+            throw new \RuntimeException('aluno_id ou turma_id está nulo.');
+        }
+
+        return new Entity(
+            (int) $row['aluno_id'],
+            (int) $row['turma_id'],
+            $row['data_matricula'] ?? null,
+            isset($row['id']) ? (int) $row['id'] : null
+        );
     }
 }

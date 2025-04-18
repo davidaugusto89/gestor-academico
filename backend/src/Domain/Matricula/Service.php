@@ -8,14 +8,14 @@ use App\Core\Exceptions\NotFoundException;
 class Service
 {
     public function __construct(
-        private readonly Repository $repository
+        private readonly repository $repositorio
     ) {}
 
     public function matricular(DTO $dto): void
     {
         Validator::validar($dto);
 
-        if ($this->repository->alunoJaMatriculado($dto->getAlunoId(), $dto->getTurmaId())) {
+        if ($this->repositorio->alunoJaMatriculado($dto->getAlunoId(), $dto->getTurmaId())) {
             throw new MatriculaDuplicadaException("Aluno já matriculado nesta turma.");
         }
 
@@ -25,19 +25,25 @@ class Service
             date('Y-m-d')
         );
 
-        $this->repository->matricular($matricula);
+        $this->repositorio->matricular($matricula);
     }
+
+    public function listarTodos(array $params, string $ordem = 'nome:asc'): array
+    {
+        return $this->repositorio->listarTodos($params, $ordem, Filter::camposPermitidos());
+    }
+
 
     public function listarPorTurma(int $turmaId): array
     {
-        return $this->repository->listarPorTurma($turmaId);
+        return $this->repositorio->listarPorTurma($turmaId);
     }
 
     public function remover(DTO $dto): void
     {
         Validator::validar($dto);
 
-        if (!$this->repository->alunoJaMatriculado($dto->getAlunoId(), $dto->getTurmaId())) {
+        if (!$this->repositorio->alunoJaMatriculado($dto->getAlunoId(), $dto->getTurmaId())) {
             throw new NotFoundException("Matrícula não encontrada.");
         }
 
@@ -46,6 +52,6 @@ class Service
             $dto->getTurmaId(),
         );
 
-        $this->repository->remover($matricula);
+        $this->repositorio->remover($matricula);
     }
 }

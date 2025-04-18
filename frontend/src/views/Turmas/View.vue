@@ -12,7 +12,6 @@
       </div>
 
       <div v-else>
-        <!-- Linha 1 -->
         <div class="grid grid-cols-1 gap-6 mb-4">
           <div>
             <label class="block text-sm font-medium text-gray-700">Nome</label>
@@ -26,6 +25,30 @@
             <p class="text-gray-900">{{ data.descricao }}</p>
           </div>
         </div>
+
+         <!-- Alunos Matriculados -->
+        <div class="bg-white mt-3">
+          <h2 class="text-md font-bold mb-4">Alunos Matriculados ({{ dataAlunos.length }})</h2>
+
+          <table class="min-w-full table-auto border border-gray-200" v-if="dataAlunos.length > 0">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="text-left px-4 py-2 border-b">Nome</th>
+                <th class="text-left px-4 py-2 border-b">E-mail</th>
+                <th class="text-left px-4 py-2 border-b">CPF</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(aluno, index) in dataAlunos" :key="index" class="hover:bg-gray-50">
+                <td class="px-4 py-2 border-b">{{ aluno.nome }}</td>
+                <td class="px-4 py-2 border-b">{{ aluno.email }}</td>
+                <td class="px-4 py-2 border-b">{{ formatCpf(aluno.cpf) }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p v-if="dataAlunos.length === 0" class="text-gray-500 mt-4">Nenhum aluno matriculado nesta turma.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -35,6 +58,7 @@
   import { ref, computed, onMounted } from 'vue'
   import { useRoute } from 'vue-router'
   import request from '@/services/request'
+  import { formatCpf } from '@/helpers/formatters'
 
 
   const formatDate = (value: string) => {
@@ -49,18 +73,15 @@
 
   const isLoading = ref(false)
   const data = ref<any>({})
-
-  // Computed properties para os dados formatados
-  const formattedCpfCnpj = computed(() => formatCpfCnpj(data.value.cpfCnpj))
-  const formattedCep = computed(() => formatCep(data.value.cep))
-  const formattedPhone = computed(() => formatPhone(data.value.fone))
-  const formattedCreditLimit = computed(() =>
-    formatCurrency(data.value.limiteCredito)
-  )
-  const formattedValidity = computed(() => formatDate(data.value.validade))
+  const dataAlunos = ref<any>({})
 
   // Função para carregar os dados do turma
   const loadInfo = async () => {
+    await loadTurma()
+    await loadAlunos()
+  }
+
+  const loadTurma = async () => {
     try {
       isLoading.value = true
       const response = await request.get(`/turmas/${turmaId.value}`)
@@ -70,6 +91,23 @@
       }
     } catch (error) {
       console.error('Erro ao carregar os dados do turma:', error)
+    } finally {
+      setTimeout(() => {
+        isLoading.value = false
+      }, 500)
+    }
+  }
+
+  const loadAlunos = async () => {
+    try {
+      isLoading.value = true
+      const response = await request.get(`/matriculas/turma/${turmaId.value}`)
+
+      if (response.status === 200) {
+        dataAlunos.value = response.data
+      }
+    } catch (error) {
+      console.error('Erro ao carregar os alunos:', error)
     } finally {
       setTimeout(() => {
         isLoading.value = false

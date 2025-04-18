@@ -6,6 +6,7 @@ use App\Core\BaseController;
 use App\Core\HttpStatus;
 use App\Domain\Matricula\DTO;
 use App\Domain\Matricula\Service;
+use App\Utils\Paginador;
 use App\Utils\Response;
 
 class MatriculaController extends BaseController
@@ -22,6 +23,20 @@ class MatriculaController extends BaseController
 
         Response::json(['mensagem' => 'Matrícula realizada com sucesso.'], HttpStatus::CREATED);
     }
+
+    public function listar(array $params): void
+    {
+        $paramsFilter = Paginador::extrairParametros($params);
+        $retorno = $this->service->listarTodos($paramsFilter, 'data_matricula:desc',);
+
+        $resultado = Paginador::formatarResultado(
+            $retorno['data'],
+            $retorno['total']
+        );
+
+        Response::json($resultado, HttpStatus::OK);
+    }
+
 
     public function listarPorTurma(int $turmaId): void
     {

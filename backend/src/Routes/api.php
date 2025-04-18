@@ -34,6 +34,7 @@ $router->delete('/turmas/{id}', [TurmaController::class, 'remover']);
 
 // Matrícula
 $router->post('/matriculas', [MatriculaController::class, 'matricular']);
+$router->get('/matriculas', [MatriculaController::class, 'listar']);
 $router->get('/matriculas/turma/{id}', [MatriculaController::class, 'listarPorTurma']);
 $router->delete('/matriculas', [MatriculaController::class, 'remover']); // precisa do aluno_id e turma_id no body
 
