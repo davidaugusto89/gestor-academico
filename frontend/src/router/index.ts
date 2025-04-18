@@ -36,6 +36,11 @@ import NotFoundPage from '@/views/NotFoundPage.vue'
 
 const routes = [
   {
+    path: '/docs',
+    redirect: '/api/docs',
+  },
+
+  {
     path: '/login',
     component: LayoutAutenticacao,
     children: [
