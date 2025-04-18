@@ -4,6 +4,7 @@ namespace App\Core;
 
 use App\Controller\AlunoController;
 use App\Controller\AuthController;
+use App\Controller\ExampleController;
 use App\Controller\TurmaController;
 use App\Controller\MatriculaController;
 use App\Controller\HealthController;
@@ -73,6 +74,12 @@ class ControllerFactory
                     new UsuarioValidator()
                 )
             ),
+
+            /*
+             * Adicionado controle de exemplo
+             * para testes
+             */
+            ExampleController::class => new ExampleController(),
 
             default => throw new \RuntimeException("Controller não registrado: $controllerClass")
         };

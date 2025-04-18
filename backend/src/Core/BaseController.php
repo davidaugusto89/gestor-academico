@@ -76,7 +76,7 @@ class BaseController
             return $this->usuario;
         }
 
-        $headers = getallheaders();
+        $headers = \getallheaders();
         $authorization = $headers['Authorization'] ?? '';
 
         if (!str_starts_with($authorization, 'Bearer ')) {

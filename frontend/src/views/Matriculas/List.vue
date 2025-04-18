@@ -2,11 +2,11 @@
   <div class="relative overflow-x-autosm:rounded-lg">
     <div class="flex items-center justify-between pb-4">
       <!-- Título alinhado à esquerda -->
-      <h2 class="text-2xl font-bold text-gray-900">Matriculas</h2>
+      <h2 class="text-2xl font-bold text-gray-900">Matrículas</h2>
 
       <!-- Botão alinhado à direita -->
       <Button type="primary" width="small" redirect-to="/matriculas/nova">
-        + Nova Matricula
+        + Nova Matrícula
       </Button>
     </div>
 

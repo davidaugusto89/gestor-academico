@@ -90,7 +90,7 @@
               to="/matriculas"
               class="group flex items-center py-2 px-4 rounded-lg transition-all duration-300 hover:bg-white/10 hover:pl-5"
               :class="
-                $route.name?.startsWith('Matriculas')
+                $route.name?.startsWith('Matrículas')
                   ? 'bg-white/10 border-l-4 border-white pl-5'
                   : ''
               "
