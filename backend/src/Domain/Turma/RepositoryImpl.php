@@ -6,14 +6,23 @@ use App\Core\BaseRepository;
 use App\Core\QueryBuilderHelper;
 use PDO;
 
+/**
+ * Implementação do repositório de Turmas com persistência via PDO.
+ */
 class RepositoryImpl extends BaseRepository implements Repository
 {
+    /**
+     * @param PDO $pdo Conexão com o banco de dados
+     */
     public function __construct(PDO $pdo)
     {
         parent::__construct($pdo);
         $this->tabela = 'turmas';
     }
 
+    /**
+     * @inheritDoc
+     */
     public function criar(Entity $turma): void
     {
         $sql = "INSERT INTO {$this->tabela} (nome, descricao) VALUES (:nome, :descricao)";
@@ -24,6 +33,9 @@ class RepositoryImpl extends BaseRepository implements Repository
         ]);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function listarTodos(array $params, string $ordem = 'nome:asc', ?array $camposPermitidos = null): array
     {
         $sql = "
@@ -51,6 +63,9 @@ class RepositoryImpl extends BaseRepository implements Repository
         );
     }
 
+    /**
+     * @inheritDoc
+     */
     public function buscarPorNome(string $nome): array
     {
         $sql = "SELECT * FROM {$this->tabela} WHERE nome LIKE :nome ORDER BY nome ASC";
@@ -65,10 +80,12 @@ class RepositoryImpl extends BaseRepository implements Repository
         return $result;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function existeComMesmoNome(string $nome, ?int $ignorarId = null): bool
     {
         $sql = "SELECT COUNT(*) as total FROM {$this->tabela} WHERE nome = :nome";
-
         $params = ['nome' => $nome];
 
         if ($ignorarId !== null) {
@@ -83,6 +100,9 @@ class RepositoryImpl extends BaseRepository implements Repository
         return (int) $row['total'] > 0;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function atualizar(int $id, array $dados): void
     {
         $sql = "UPDATE {$this->tabela} SET nome = :nome, descricao = :descricao WHERE id = :id";
@@ -94,12 +114,20 @@ class RepositoryImpl extends BaseRepository implements Repository
         ]);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function remover(int $id): void
     {
         $stmt = $this->pdo->prepare("DELETE FROM {$this->tabela} WHERE id = :id");
         $stmt->execute(['id' => $id]);
     }
 
+    /**
+     * Retorna o total de turmas registradas.
+     *
+     * @return int
+     */
     public function contar(): int
     {
         $stmt = $this->pdo->query("SELECT COUNT(*) as total FROM {$this->tabela}");
@@ -107,15 +135,19 @@ class RepositoryImpl extends BaseRepository implements Repository
         return (int) $row['total'];
     }
 
+    /**
+     * Mapeia os dados do banco para a entidade Turma.
+     *
+     * @param array $row
+     * @return object
+     */
     protected function mapearParaEntidade(array $row): object
     {
-        $turma = new Entity(
+        return new Entity(
             $row['nome'],
             $row['descricao'],
             $row['id'],
             $row['total_alunos'] ?? 0
         );
-
-        return $turma;
     }
 }

@@ -2,6 +2,11 @@
 
 namespace App\Support;
 
+/**
+ * Classe responsável por validar números de CPF.
+ *
+ * @package App\Support
+ */
 class CpfValidator
 {
     /**
@@ -10,7 +15,6 @@ class CpfValidator
      * @param string $cpf CPF a ser validado.
      * @return bool Retorna true se o CPF for válido, caso contrário, false.
      */
-
     public static function isValido(string $cpf): bool
     {
         // Remove tudo que não for número

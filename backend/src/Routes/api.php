@@ -7,6 +7,11 @@ use App\Controller\TurmaController;
 use App\Controller\MatriculaController;
 use App\Controller\UsuarioController;
 
+/**
+ * Define as rotas da aplicação e retorna o roteador configurado.
+ *
+ * @return Router Instância do roteador com todas as rotas registradas.
+ */
 $router = new Router();
 
 // Health

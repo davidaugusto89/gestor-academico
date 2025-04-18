@@ -2,19 +2,29 @@
 
 namespace App\Domain\Matricula;
 
-use App\Core\Database;
 use App\Core\QueryBuilderHelper;
 use PDO;
 
+/**
+ * Implementação concreta do repositório de matrículas.
+ */
 class RepositoryImpl implements Repository
 {
     private PDO $pdo;
 
-    public function __construct()
+    /**
+     * Construtor que inicializa a conexão com o banco de dados.
+     */
+    public function __construct(PDO $pdo)
     {
-        $this->pdo = Database::connect();
+        $this->pdo = $pdo;
     }
 
+    /**
+     * Insere uma nova matrícula no banco de dados.
+     *
+     * @param Entity $matricula
+     */
     public function matricular(Entity $matricula): void
     {
         $stmt = $this->pdo->prepare("
@@ -29,7 +39,13 @@ class RepositoryImpl implements Repository
         ]);
     }
 
-
+    /**
+     * Verifica se um aluno já está matriculado em uma turma.
+     *
+     * @param int $alunoId
+     * @param int $turmaId
+     * @return bool
+     */
     public function alunoJaMatriculado(int $alunoId, int $turmaId): bool
     {
         $stmt = $this->pdo->prepare("
@@ -45,6 +61,14 @@ class RepositoryImpl implements Repository
         return (int) $stmt->fetchColumn() > 0;
     }
 
+    /**
+     * Lista todas as matrículas com paginação e filtros.
+     *
+     * @param array $params
+     * @param string $ordem
+     * @param array|null $camposPermitidos
+     * @return array
+     */
     public function listarTodos(array $params, string $ordem = 'data_matricula:desc', ?array $camposPermitidos = null): array
     {
         $sql = "
@@ -79,6 +103,12 @@ class RepositoryImpl implements Repository
         );
     }
 
+    /**
+     * Lista os alunos matriculados em uma turma.
+     *
+     * @param int $turmaId
+     * @return array
+     */
     public function listarPorTurma(int $turmaId): array
     {
         $stmt = $this->pdo->prepare("
@@ -94,6 +124,11 @@ class RepositoryImpl implements Repository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Remove a matrícula de um aluno em uma turma.
+     *
+     * @param Entity $matricula
+     */
     public function remover(Entity $matricula): void
     {
         $stmt = $this->pdo->prepare("
@@ -106,7 +141,14 @@ class RepositoryImpl implements Repository
         ]);
     }
 
-    private function mapearParaEntidade(array $row): Entity
+
+    /**
+     * Mapeia um array de dados para a entidade Matricula.
+     *
+     * @param array $row
+     * @return Entity
+     */
+    protected function mapearParaEntidade(array $row): Entity
     {
         if (is_null($row['aluno_id']) || is_null($row['turma_id'])) {
             throw new \RuntimeException('aluno_id ou turma_id está nulo.');

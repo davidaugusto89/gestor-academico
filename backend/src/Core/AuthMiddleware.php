@@ -3,10 +3,21 @@
 namespace App\Core;
 
 use App\Core\Exceptions\UnauthorizedException;
-use App\Core\TokenManager;
 
+/**
+ * Middleware de autenticação para proteger rotas com base em token JWT.
+ */
 class AuthMiddleware
 {
+    /**
+     * Verifica o cabeçalho Authorization e valida o token JWT.
+     *
+     * @param array $headers Cabeçalhos da requisição, incluindo Authorization.
+     *
+     * @throws UnauthorizedException Se o token estiver ausente, inválido ou expirado.
+     *
+     * @return void
+     */
     public static function proteger(array $headers): void
     {
         $authHeader = $headers['Authorization'] ?? '';

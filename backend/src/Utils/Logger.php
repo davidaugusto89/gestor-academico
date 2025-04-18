@@ -2,8 +2,19 @@
 
 namespace App\Utils;
 
+/**
+ * Classe utilitária para registrar erros em arquivos de log.
+ *
+ * @package App\Utils
+ */
 class Logger
 {
+    /**
+     * Registra um erro no arquivo de log `storage/logs/error.log`.
+     *
+     * @param string|\Throwable $erro Erro a ser registrado. Pode ser uma string simples ou uma exceção/lançável.
+     * @return void
+     */
     public static function erro(string|\Throwable $erro): void
     {
         $agora = date('Y-m-d H:i:s');

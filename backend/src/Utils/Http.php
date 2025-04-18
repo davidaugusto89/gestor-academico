@@ -2,8 +2,22 @@
 
 namespace App\Utils;
 
+/**
+ * Classe utilitária para operações relacionadas a HTTP.
+ *
+ * @package App\Utils
+ */
 class Http
 {
+    /**
+     * Retorna a URI normalizada da requisição atual.
+     *
+     * Regras de normalização:
+     * - Remove o prefixo "/api" caso esteja presente.
+     * - Remove a barra no final da URI (exceto quando a URI for "/").
+     *
+     * @return string URI normalizada.
+     */
     public static function getNormalizedUri(): string
     {
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);

@@ -5,14 +5,30 @@ namespace App\Domain\Usuario;
 use App\Core\BaseRepository;
 use PDO;
 
+/**
+ * Implementação do repositório de usuários, responsável por interações com a tabela "usuarios".
+ *
+ * @package App\Domain\Usuario
+ */
 class RepositoryImpl extends BaseRepository implements Repository
 {
+    /**
+     * Construtor da classe.
+     *
+     * @param PDO $pdo Instância de conexão com o banco de dados.
+     */
     public function __construct(PDO $pdo)
     {
         parent::__construct($pdo);
         $this->tabela = 'usuarios';
     }
 
+    /**
+     * Insere um novo usuário no banco de dados.
+     *
+     * @param Entity $usuario Entidade de usuário a ser criada.
+     * @return void
+     */
     public function criar(Entity $usuario): void
     {
         $stmt = $this->pdo->prepare("
@@ -28,6 +44,12 @@ class RepositoryImpl extends BaseRepository implements Repository
         ]);
     }
 
+    /**
+     * Busca um usuário pelo e-mail.
+     *
+     * @param string $email E-mail do usuário.
+     * @return Entity|null Retorna a entidade se encontrada, ou null.
+     */
     public function buscarPorEmail(string $email): ?Entity
     {
         $stmt = $this->pdo->prepare("SELECT * FROM usuarios WHERE email = :email");
@@ -47,6 +69,13 @@ class RepositoryImpl extends BaseRepository implements Repository
         );
     }
 
+    /**
+     * Verifica se existe um usuário com o e-mail informado.
+     *
+     * @param string $email E-mail a ser verificado.
+     * @param int|null $ignorarId ID do usuário a ser ignorado na verificação (opcional).
+     * @return bool Retorna true se o e-mail já existir, false caso contrário.
+     */
     public function existePorEmail(string $email, ?int $ignorarId = null): bool
     {
         $sql = "SELECT COUNT(*) FROM usuarios WHERE email = :email";
@@ -69,6 +98,12 @@ class RepositoryImpl extends BaseRepository implements Repository
         return (int) $stmt->fetchColumn() > 0;
     }
 
+    /**
+     * Mapeia um array de dados para uma entidade de usuário.
+     *
+     * @param array $dados Dados retornados do banco de dados.
+     * @return Entity
+     */
     protected function mapearParaEntidade(array $dados): object
     {
         return new Entity(

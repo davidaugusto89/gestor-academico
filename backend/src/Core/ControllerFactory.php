@@ -23,8 +23,19 @@ use App\Domain\Usuario\RepositoryImpl as UsuarioRepository;
 use App\Domain\Usuario\Service as UsuarioService;
 use App\Domain\Usuario\Validator as UsuarioValidator;
 
+/**
+ * Fábrica de controllers responsável por instanciar os controladores com suas dependências.
+ */
 class ControllerFactory
 {
+    /**
+     * Cria e retorna uma instância do controller especificado.
+     *
+     * @param string $controllerClass Nome totalmente qualificado da classe do controller.
+     * @return object Instância do controller.
+     *
+     * @throws \RuntimeException Se o controller não estiver registrado.
+     */
     public static function make(string $controllerClass): object
     {
         return match ($controllerClass) {

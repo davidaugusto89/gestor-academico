@@ -5,6 +5,15 @@ namespace App\Domain\Aluno;
 use App\Utils\DateHelper;
 use App\Utils\Normalizer;
 
+/**
+ * DTO que representa os dados transferidos para Aluno.
+ *
+ * @property-read string $nome
+ * @property-read string $nascimento
+ * @property-read string $cpf
+ * @property-read string $email
+ * @property-read string $senha
+ */
 class DTO
 {
     private string $nome;
@@ -15,6 +24,12 @@ class DTO
 
     private function __construct() {}
 
+    /**
+     * Cria um DTO de Aluno a partir de um array associativo.
+     *
+     * @param array $dados ['nome', 'nascimento', 'cpf', 'email', 'senha']
+     * @return self
+     */
     public static function fromArray(array $dados): self
     {
         $dto = new self();

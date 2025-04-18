@@ -6,8 +6,19 @@ use App\Domain\Aluno\Exceptions\AlunoInvalidoException;
 use App\Support\CpfValidator;
 use App\Support\PasswordManager;
 
+/**
+ * Classe responsável pela validação das regras de negócio do Aluno.
+ */
 class Validator
 {
+    /**
+     * Valida os dados do DTO de Aluno.
+     *
+     * @param DTO $aluno Dados do aluno a serem validados
+     * @param int|null $id ID do aluno (null para criação)
+     *
+     * @throws AlunoInvalidoException Se alguma validação falhar
+     */
     public static function validar(DTO $aluno, ?int $id): void
     {
         if (strlen($aluno->getNome()) < 3) {

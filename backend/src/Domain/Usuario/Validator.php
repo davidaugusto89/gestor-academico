@@ -7,7 +7,14 @@ use App\Support\PasswordManager;
 
 class Validator
 {
-    public static function validar(DTO $dto, ?int $id): void
+    /**
+     * Valida os dados do usuário.
+     *
+     * @param DTO $dto Dados do usuário
+     * @param int|null $id ID do usuário, se estiver sendo atualizado
+     * @throws UsuarioInvalidoException
+     */
+    public static function validar(DTO $dto, ?int $id = null): void
     {
         if (strlen(trim($dto->getNome())) < 3) {
             throw new UsuarioInvalidoException("Nome deve ter ao menos 3 caracteres.");

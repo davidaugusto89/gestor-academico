@@ -8,12 +8,24 @@ use App\Domain\Usuario\Service;
 use App\Utils\Response;
 use App\Core\TokenManager;
 
+/**
+ * Controller responsável pela autenticação dos usuários.
+ */
 class AuthController extends BaseController
 {
+    /**
+     * @param Service $service Serviço de autenticação de usuários.
+     */
     public function __construct(
         private readonly Service $service
     ) {}
 
+    /**
+     * Realiza o login do usuário, gerando um token de autenticação.
+     *
+     * @param array $dados Dados contendo e-mail e senha.
+     * @return void
+     */
     public function login(array $dados): void
     {
         try {
@@ -41,6 +53,11 @@ class AuthController extends BaseController
         }
     }
 
+    /**
+     * Retorna os dados do usuário autenticado.
+     *
+     * @return void
+     */
     public function me(): void
     {
         $usuario = $this->usuarioAutenticado();
