@@ -39,7 +39,6 @@ Este é um projeto fullstack construído em **PHP puro** (sem frameworks) com **
 - **Docker e Docker Compose**
 - **Swagger UI (OpenAPI)**
 - **PhpMyAdmin** (gerenciador visual de banco de dados)
-- **Mailhog** (teste de envio de e-mails)
 
 ---
 
@@ -84,7 +83,6 @@ Esse script realiza:
 | Backend API    | http://localhost/api        |
 | Swagger UI     | http://localhost/api/docs   |
 | PhpMyAdmin     | http://localhost:8081       |
-| Mailhog        | http://localhost:8025       |
 
 ---
 
