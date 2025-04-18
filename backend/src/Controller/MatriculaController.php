@@ -16,10 +16,7 @@ class MatriculaController extends BaseController
 
     public function matricular(array $dados): void
     {
-        $dto = new DTO(
-            $dados['aluno_id'],
-            $dados['turma_id']
-        );
+        $dto = DTO::fromArray($dados);
 
         $this->service->matricular($dto);
 
@@ -32,9 +29,12 @@ class MatriculaController extends BaseController
         Response::json($alunos, HttpStatus::OK);
     }
 
-    public function remover(int $alunoId, int $turmaId): void
+    public function remover(array $dados): void
     {
-        $this->service->remover($alunoId, $turmaId);
+        $dto = DTO::fromArray($dados);
+
+        $this->service->remover($dto);
+
         Response::json(['mensagem' => 'Matrícula removida com sucesso.'], HttpStatus::OK);
     }
 }

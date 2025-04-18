@@ -48,9 +48,9 @@ class BaseController
             throw new UnauthorizedException('Token inválido.');
         }
 
-        $repo = new \App\Domain\Usuario\RepositoryImpl(\App\Core\Database::connect());
+        $repository = new \App\Domain\Usuario\RepositoryImpl(\App\Core\Database::connect());
 
-        $usuario = $repo->buscarPorId($dados['id']);
+        $usuario = $repository->buscarPorId($dados['id']);
 
         if (!$usuario) {
             throw new UnauthorizedException('Usuário não encontrado.');

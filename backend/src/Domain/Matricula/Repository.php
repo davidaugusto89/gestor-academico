@@ -2,13 +2,21 @@
 
 namespace App\Domain\Matricula;
 
+use Dotenv\Parser\Entry;
+
 interface Repository
 {
-    public function alunoJaMatriculado(int $alunoId, int $turmaId): bool;
-    public function criar(Entity $matricula): void;
+    /**
+     * @param Entity $matricula
+     */
+    public function matricular(Entity $matricula): void;
+
     public function listarPorTurma(int $turmaId): array;
 
-    public function remover(int $alunoId, int $turmaId): void;
-    public function atualizar(Entity $matricula): void;
-    public function buscar(int $alunoId, int $turmaId): ?Entity;
+    public function alunoJaMatriculado(int $alunoId, int $turmaId): bool;
+
+    /**
+     * @param Entity $matricula
+     */
+    public function remover(Entity $matricula): void;
 }

@@ -8,55 +8,44 @@ use App\Core\Exceptions\NotFoundException;
 class Service
 {
     public function __construct(
-        private readonly Repository $repo
+        private readonly Repository $repository
     ) {}
 
     public function matricular(DTO $dto): void
     {
         Validator::validar($dto);
 
-        if ($this->repo->alunoJaMatriculado($dto->aluno_id, $dto->turma_id)) {
+        if ($this->repository->alunoJaMatriculado($dto->getAlunoId(), $dto->getTurmaId())) {
             throw new MatriculaDuplicadaException("Aluno já matriculado nesta turma.");
         }
 
         $matricula = new Entity(
-            $dto->aluno_id,
-            $dto->turma_id,
+            $dto->getAlunoId(),
+            $dto->getTurmaId(),
             date('Y-m-d')
         );
 
-        $this->repo->criar($matricula);
+        $this->repository->matricular($matricula);
     }
 
     public function listarPorTurma(int $turmaId): array
     {
-        return $this->repo->listarPorTurma($turmaId);
+        return $this->repository->listarPorTurma($turmaId);
     }
 
-    public function remover(int $alunoId, int $turmaId): void
-    {
-        if (!$this->repo->alunoJaMatriculado($alunoId, $turmaId)) {
-            throw new NotFoundException("Matrícula não encontrada.");
-        }
-
-        $this->repo->remover($alunoId, $turmaId);
-    }
-
-    // Opcional, caso queira alterar uma matrícula
-    public function atualizar(DTO $dto): void
+    public function remover(DTO $dto): void
     {
         Validator::validar($dto);
 
-        if (!$this->repo->alunoJaMatriculado($dto->aluno_id, $dto->turma_id)) {
+        if (!$this->repository->alunoJaMatriculado($dto->getAlunoId(), $dto->getTurmaId())) {
             throw new NotFoundException("Matrícula não encontrada.");
         }
 
         $matricula = new Entity(
-            $dto->aluno_id,
-            $dto->turma_id,
-            date('Y-m-d')
+            $dto->getAlunoId(),
+            $dto->getTurmaId(),
         );
 
-        $this->repo->atualizar($matricula);
+        $this->repository->remover($matricula);
     }
 }

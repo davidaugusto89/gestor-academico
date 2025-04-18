@@ -4,8 +4,10 @@ namespace App\Domain\Matricula;
 
 class DTO
 {
-    public int $aluno_id;
-    public int $turma_id;
+    private int $aluno_id;
+    private int $turma_id;
+
+    private function __construct() {}
 
     public static function fromArray(array $dados): self
     {
@@ -13,5 +15,15 @@ class DTO
         $dto->aluno_id = (int)($dados['aluno_id'] ?? 0);
         $dto->turma_id = (int)($dados['turma_id'] ?? 0);
         return $dto;
+    }
+
+    public function getAlunoId(): int
+    {
+        return $this->aluno_id;
+    }
+
+    public function getTurmaId(): int
+    {
+        return $this->turma_id;
     }
 }

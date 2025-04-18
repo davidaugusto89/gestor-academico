@@ -8,7 +8,7 @@ class Validator
 {
     public static function validar(DTO $dto): void
     {
-        if ($dto->aluno_id <= 0 || $dto->turma_id <= 0) {
+        if ($dto->getAlunoId() <= 0 || $dto->getTurmaId() <= 0) {
             throw new MatriculaInvalidaException("Aluno ou turma inválidos.");
         }
     }
