@@ -4,7 +4,9 @@
     "type": "project",
     "scripts": {
         "test": "phpunit",
-        "test:coverage": "XDEBUG_MODE=coverage ./vendor/bin/phpunit"
+        "test:coverage": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-html coverage-report",
+        "test:coverage:xml": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-clover coverage-report/coverage.xml",
+        "test:coverage:all": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-html coverage-report --coverage-clover coverage-report/coverage.xml"
     },
     "require": {
         "firebase/php-jwt": "^6.9",
