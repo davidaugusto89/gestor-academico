@@ -21,6 +21,7 @@
     <exclude>
       <file>src/Routes/api.php</file>
       <file>src/Controller/HealthController.php</file>
+      <file>src/bootstrap.php</file>
     </exclude>
   </source>
 

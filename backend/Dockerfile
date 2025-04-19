@@ -34,12 +34,14 @@ WORKDIR /var/www/html
 # Copiar todos os arquivos para dentro do container
 COPY . .
 
-# Cria pasta de logs e define permissões
+# Cria pastas necessárias e define permissões
 RUN mkdir -p /var/www/html/storage/logs \
-    && chmod -R 777 /var/www/html/storage/logs
+    && mkdir -p /var/www/html/coverage-report \
+    && chmod -R 777 /var/www/html/storage/logs \
+    && chmod -R 777 /var/www/html/coverage-report
 
 # Instalar dependências
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+RUN composer install --no-interaction --prefer-dist
 
 # Ajustar permissões (evita erros de acesso)
 RUN chown -R www-data:www-data /var/www/html

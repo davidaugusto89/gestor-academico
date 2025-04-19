@@ -27,12 +27,12 @@ class EnvLoaderTest extends TestCase
 
         $this->assertEquals('dev', $_ENV['APP_ENV']);
 
-        $this->assertEquals('host_teste', $_ENV['DB_HOST']);
+        $this->assertEquals('database', $_ENV['DB_HOST']);
         $this->assertEquals('3306', $_ENV['DB_PORT']);
-        $this->assertEquals('db_teste', $_ENV['DB_NAME']);
-        $this->assertEquals('user_teste', $_ENV['DB_USER']);
-        $this->assertEquals('pass_teste', $_ENV['DB_PASS']);
+        $this->assertEquals('gestor_academico', $_ENV['DB_NAME']);
+        $this->assertEquals('user', $_ENV['DB_USER']);
+        $this->assertEquals('password', $_ENV['DB_PASS']);
 
-        $this->assertEquals('teste', $_ENV['JWT_SECRET']);
+        $this->assertEquals('teste-gestor-academico-123456', $_ENV['JWT_SECRET']);
     }
 }

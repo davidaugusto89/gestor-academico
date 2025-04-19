@@ -1,8 +1,8 @@
 <?php
 // Evita exibir erros diretamente na tela (boas práticas de produção)
-// ini_set('display_errors', '0');
-// ini_set('display_startup_errors', '0');
-// error_reporting(E_ALL);
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
+error_reporting(E_ALL);
 
 ob_start();
 
@@ -28,11 +28,17 @@ require_once __DIR__ . '/../src/Routes/api.php';
 
 // Verifica a URI atual
 $rotaAtual = Http::getNormalizedUri();
-$rotasPublicas = ['/login', '/health', '/docs'];
+$rotasPublicas = ['/login', '/health', '/docs', '/coverage-report'];
 
 // Rota para documentação
 if ($rotaAtual === '/docs') {
     require_once __DIR__ . '/../public/docs/index.html';
+    exit;
+}
+
+// Rota para relatório de cobertura
+if ($rotaAtual === '/coverage-report') {
+    require_once __DIR__ . '/../coverage-report/index.html';
     exit;
 }
 

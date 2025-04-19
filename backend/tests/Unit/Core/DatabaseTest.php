@@ -42,11 +42,11 @@ class DatabaseTest extends TestCase
     public function testConexaoValidaUsandoEnvExample(): void
     {
         // Simula valores do .env.example
-        $_ENV['DB_HOST'] = '127.0.0.1';
+        $_ENV['DB_HOST'] = 'database';
         $_ENV['DB_PORT'] = '3306';
         $_ENV['DB_NAME'] = 'gestor_academico';
-        $_ENV['DB_USER'] = 'root';
-        $_ENV['DB_PASS'] = 'root'; // ou vazio se for o seu caso
+        $_ENV['DB_USER'] = 'user';
+        $_ENV['DB_PASS'] = 'password';
 
         $pdo = Database::connect();
         $this->assertInstanceOf(PDO::class, $pdo);

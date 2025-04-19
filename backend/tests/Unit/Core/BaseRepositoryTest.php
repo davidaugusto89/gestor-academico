@@ -2,7 +2,6 @@
 
 use PHPUnit\Framework\TestCase;
 use App\Core\BaseRepository;
-use PDO;
 
 class BaseRepositoryTest extends TestCase
 {
@@ -11,8 +10,8 @@ class BaseRepositoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->pdo = new PDO('sqlite::memory:');
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->pdo = new \PDO('sqlite::memory:');
+        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $this->pdo->exec('
             CREATE TABLE itens (

@@ -8,7 +8,7 @@ class TokenManagerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $_ENV['JWT_SECRET'] = 'test_secret';
+        $_ENV['JWT_SECRET'] = 'teste-gestor-academico-123456';
     }
 
     public function testGerarRetornaTokenValido(): void

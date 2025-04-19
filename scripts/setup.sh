@@ -14,6 +14,14 @@ if [ ! -f .env ]; then
 else
     echo "ℹ️  Arquivo .env do backend já existe, não foi sobrescrito."
 fi
+
+# 📝 Verificar .env.test no backend (para testes)
+if [ ! -f .env.test ]; then
+    cp .env.example .env.test
+    echo "✅ Arquivo .env.test do backend criado a partir de .env.example."
+else
+    echo "ℹ️  Arquivo .env.test do backend já existe, não foi sobrescrito."
+fi
 cd ..
 
 # 📝 Copiar .env.example para .env no frontend
@@ -25,12 +33,15 @@ if [ ! -f .env ]; then
 else
     echo "ℹ️  Arquivo .env do frontend já existe, não foi sobrescrito."
 fi
-
 cd ..
 
 # Subir containers com Docker Compose
 echo "🐳 Subindo containers com Docker Compose..."
 docker-compose up -d --build
+
+# Instalar dependências no container backend
+echo "📦 Instalando dependências do backend com Composer dentro do container..."
+docker exec -it gestor-academico-backend composer install --no-interaction --prefer-dist
 
 echo ""
 echo "🎉 Projeto configurado com sucesso!"
@@ -43,7 +54,7 @@ echo "👉 Backend sem proxy reverso: http://localhost:8000/api"
 echo ""
 echo "👉 Swagger: http://localhost/api/docs"
 echo ""
-echo "👉 Mailhog: http://localhost:8025"
+echo "👉 Coverage Report: http://localhost/api/report"
 echo ""
 echo "👉 PHPMyAdmin: http://localhost:8081"
 echo ""
