@@ -81,7 +81,7 @@ O script realiza:
 | Serviço           | URL                              |
 |-------------------|----------------------------------|
 | Frontend          | http://localhost                 |
-| Backend API       | http://localhost/api             |
+| Backend API       | http://localhost/api/health      |
 | Swagger UI        | http://localhost/api/docs        |
 | PhpMyAdmin        | http://localhost:8081            |
 | Coverage Report   | http://localhost/coverage-report |

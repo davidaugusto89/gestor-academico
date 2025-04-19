@@ -2,13 +2,12 @@
 
 namespace App\Controller;
 
-use App\Core\BaseController;
 use App\Utils\Response;
 
 /**
  * Controller responsável por verificar a saúde da aplicação.
  */
-class HealthController extends BaseController
+class HealthController
 {
     /**
      * @param Response $response Serviço responsável pelo envio de respostas JSON.

@@ -87,7 +87,9 @@ class ControllerFactory
                 $this->response
             ),
 
-            HealthController::class => new HealthController(),
+            HealthController::class => new HealthController(
+                $this->response
+            ),
 
             UsuarioController::class => new UsuarioController(
                 new UsuarioService(
