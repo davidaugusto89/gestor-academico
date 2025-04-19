@@ -1,15 +1,14 @@
 <?php
 // Evita exibir erros diretamente na tela (boas práticas de produção)
-ini_set('display_errors', '0');
-ini_set('display_startup_errors', '0');
-error_reporting(E_ALL);
+// ini_set('display_errors', '0');
+// ini_set('display_startup_errors', '0');
+// error_reporting(E_ALL);
 
 ob_start();
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Core\EnvLoader;
-use App\Core\Router;
 use App\Core\HttpStatus;
 use App\Core\AuthMiddleware;
 use App\Core\Exceptions\HttpException;
@@ -18,10 +17,16 @@ use App\Utils\Response;
 use App\Utils\Http;
 use App\Utils\Logger;
 
-EnvLoader::load();
+// Carrega variáveis de ambiente
+EnvLoader::load(__DIR__ . '/../');
 
-$router = require_once __DIR__ . '/../src/Routes/api.php';
+// Instancia o roteador e dependências da aplicação
+$router = require_once __DIR__ . '/../src/bootstrap.php';
 
+// Registra as rotas
+require_once __DIR__ . '/../src/Routes/api.php';
+
+// Verifica a URI atual
 $rotaAtual = Http::getNormalizedUri();
 $rotasPublicas = ['/login', '/health', '/docs'];
 
@@ -31,17 +36,13 @@ if ($rotaAtual === '/docs') {
     exit;
 }
 
-/**
- * Captura exceções não tratadas
- */
+// Captura exceções não tratadas
 set_exception_handler(function (Throwable $e) {
     Logger::erro($e);
     Response::error('Erro interno no servidor.', HttpStatus::INTERNAL_SERVER_ERROR);
 });
 
-/**
- * Captura erros fatais (ex: parse error, type error)
- */
+// Captura erros fatais
 register_shutdown_function(function () {
     $erro = error_get_last();
 
@@ -53,10 +54,12 @@ register_shutdown_function(function () {
 });
 
 try {
+    // Aplica middleware de autenticação em rotas protegidas
     if (!in_array($rotaAtual, $rotasPublicas)) {
         AuthMiddleware::proteger(getallheaders());
     }
 
+    // Despacha a rota
     if (!$router->dispatch()) {
         throw new NotFoundException();
     }

@@ -1,21 +1,14 @@
 <?php
 
-use App\Core\Router;
 use App\Controller\AlunoController;
 use App\Controller\AuthController;
 use App\Controller\TurmaController;
 use App\Controller\MatriculaController;
 use App\Controller\UsuarioController;
-
-/**
- * Define as rotas da aplicação e retorna o roteador configurado.
- *
- * @return Router Instância do roteador com todas as rotas registradas.
- */
-$router = new Router();
+use App\Controller\HealthController;
 
 // Health
-$router->get('/health', [\App\Controller\HealthController::class, 'health']);
+$router->get('/health', [HealthController::class, 'health']);
 
 // Auth
 $router->post('/login', [AuthController::class, 'login']);
@@ -41,14 +34,12 @@ $router->delete('/turmas/{id}', [TurmaController::class, 'remover']);
 $router->post('/matriculas', [MatriculaController::class, 'matricular']);
 $router->get('/matriculas', [MatriculaController::class, 'listar']);
 $router->get('/matriculas/turma/{id}', [MatriculaController::class, 'listarPorTurma']);
-$router->delete('/matriculas', [MatriculaController::class, 'remover']); // precisa do aluno_id e turma_id no body
+$router->delete('/matriculas', [MatriculaController::class, 'remover']); // requer aluno_id e turma_id no body
 
-//Usuario
+// Usuário
 $router->post('/usuarios', [UsuarioController::class, 'criar']);
 $router->get('/usuarios', [UsuarioController::class, 'listar']);
 $router->get('/usuarios/busca', [UsuarioController::class, 'buscarPorNome']);
 $router->get('/usuarios/{id}', [UsuarioController::class, 'buscar']);
 $router->put('/usuarios/{id}', [UsuarioController::class, 'atualizar']);
 $router->delete('/usuarios/{id}', [UsuarioController::class, 'remover']);
-
-return $router;

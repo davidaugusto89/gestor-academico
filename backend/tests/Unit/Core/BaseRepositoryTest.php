@@ -11,11 +11,9 @@ class BaseRepositoryTest extends TestCase
 
     protected function setUp(): void
     {
-        // SQLite em memória para testes isolados
         $this->pdo = new PDO('sqlite::memory:');
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Cria tabela fake
         $this->pdo->exec('
             CREATE TABLE itens (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -24,7 +22,6 @@ class BaseRepositoryTest extends TestCase
             )
         ');
 
-        // Insere alguns dados
         $this->pdo->exec("
             INSERT INTO itens (nome, ativo) VALUES
             ('Item A', 1),
@@ -32,7 +29,6 @@ class BaseRepositoryTest extends TestCase
             ('Item C', 1)
         ");
 
-        // Cria uma instância anônima do repositório
         $this->repo = new class($this->pdo) extends BaseRepository {
             protected string $tabela = 'itens';
 
@@ -66,5 +62,21 @@ class BaseRepositoryTest extends TestCase
 
         $item = $this->repo->buscarPorId(3);
         $this->assertNull($item);
+    }
+    public function testListarTodos()
+    {
+        $result = $this->repo->listarTodos([
+            'page' => 1,
+            'itemsPerPage' => 999
+        ]);
+
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('total', $result);
+        $this->assertCount(3, $result['data']);
+        $this->assertEquals(3, $result['total']);
+
+        $this->assertEquals('Item A', $result['data'][0]->nome);
+        $this->assertEquals('Item B', $result['data'][1]->nome);
+        $this->assertEquals('Item C', $result['data'][2]->nome);
     }
 }

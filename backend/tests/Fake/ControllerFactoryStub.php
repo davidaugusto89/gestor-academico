@@ -1,11 +1,19 @@
 <?php
 
-namespace App\Core;
+namespace Tests\Fake;
 
-class ControllerFactory
+use App\Core\ControllerFactory;
+use App\Controller\BaseController;
+
+class ControllerFactoryStub extends ControllerFactory
 {
-    public static function make(string $class)
+    public function __construct()
     {
-        return new $class();
+        // Chama um construtor vazio, pois o stub não precisa de dependências reais
+    }
+
+    public function make(string $controllerClass): object
+    {
+        return new FakeController();
     }
 }

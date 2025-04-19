@@ -17,6 +17,10 @@ class Router
      */
     private array $routes = [];
 
+    public function __construct(
+        private readonly ControllerFactory $controllerFactory
+    ) {}
+
     /**
      * Registra uma rota do tipo GET.
      *
@@ -83,7 +87,7 @@ class Router
                 array_shift($matches);
                 [$controllerClass, $methodName] = $action;
 
-                $controller = \App\Core\ControllerFactory::make($controllerClass);
+                $controller = $this->controllerFactory->make($controllerClass);
                 $reflection = new ReflectionMethod($controller, $methodName);
                 $paramCount = $reflection->getNumberOfParameters();
 

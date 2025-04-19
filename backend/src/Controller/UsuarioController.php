@@ -15,21 +15,15 @@ use App\Utils\Response;
 class UsuarioController extends BaseController
 {
     /**
-     * Serviço responsável pela lógica de negócios relacionada a usuários.
-     *
-     * @var Service
-     */
-    private readonly Service $service;
-
-    /**
      * Construtor do controller de usuários.
      *
-     * @param Service $service Instância do serviço de usuários.
+     * @param Service $service Serviço responsável pela lógica de usuários.
+     * @param Response $response Serviço responsável pelo envio de respostas JSON.
      */
-    public function __construct(Service $service)
-    {
-        $this->service = $service;
-    }
+    public function __construct(
+        private readonly Service $service,
+        private readonly Response $response
+    ) {}
 
     /**
      * Cria um novo usuário com os dados fornecidos.
@@ -41,7 +35,7 @@ class UsuarioController extends BaseController
     {
         $dto = DTO::fromArray($dados);
         $this->service->criar($dto);
-        Response::json(['mensagem' => 'Usuário cadastrado com sucesso.'], HttpStatus::CREATED);
+        $this->response->json(['mensagem' => 'Usuário cadastrado com sucesso.'], HttpStatus::CREATED);
     }
 
     /**
@@ -56,7 +50,7 @@ class UsuarioController extends BaseController
         $retorno = $this->service->listarTodos($paramsFilter, 'nome:asc');
 
         $resultado = Paginador::formatarResultado($retorno['data'], $retorno['total']);
-        Response::json($resultado, HttpStatus::OK);
+        $this->response->json($resultado, HttpStatus::OK);
     }
 
     /**
@@ -68,7 +62,7 @@ class UsuarioController extends BaseController
     public function buscar(int $id): void
     {
         $usuario = $this->service->buscarPorId($id);
-        Response::json($usuario, HttpStatus::OK);
+        $this->response->json($usuario, HttpStatus::OK);
     }
 
     /**
@@ -80,7 +74,7 @@ class UsuarioController extends BaseController
     public function buscarPorEmail(string $email): void
     {
         $usuario = $this->service->buscarPorEmail($email);
-        Response::json($usuario, HttpStatus::OK);
+        $this->response->json($usuario, HttpStatus::OK);
     }
 
     /**
@@ -94,7 +88,7 @@ class UsuarioController extends BaseController
     {
         $dto = DTO::fromArray($dados);
         $this->service->atualizar($id, $dto);
-        Response::json(['mensagem' => 'Usuário atualizado com sucesso.'], HttpStatus::OK);
+        $this->response->json(['mensagem' => 'Usuário atualizado com sucesso.'], HttpStatus::OK);
     }
 
     /**
@@ -106,6 +100,6 @@ class UsuarioController extends BaseController
     public function remover(int $id): void
     {
         $this->service->remover($id);
-        Response::json(['mensagem' => 'Usuário removido com sucesso.'], HttpStatus::OK);
+        $this->response->json(['mensagem' => 'Usuário removido com sucesso.'], HttpStatus::OK);
     }
 }

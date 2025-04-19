@@ -119,4 +119,160 @@ class UsuarioServiceTest extends TestCase
 
         $this->service->remover(999);
     }
+
+    public function testCriarUsuarioComSucesso(): void
+    {
+        $dadosArray = [
+            'nome' => 'Novo Usuário',
+            'email' => 'novo@email.com',
+            'senha' => 'Senha123!',
+            'papel' => 'user'
+        ];
+
+        $dto = DTO::fromArray($dadosArray);
+
+        // Mock do repositório
+        $this->repositorio
+            ->method('existePorEmail')
+            ->willReturn(false);
+
+        $this->repositorio
+            ->expects($this->once())
+            ->method('criar')
+            ->with($this->callback(function (Entity $usuario) use ($dadosArray) {
+                return $usuario->getNome() === $dadosArray['nome'] &&
+                    $usuario->getEmail() === $dadosArray['email'] &&
+                    PasswordManager::verificar($dadosArray['senha'], $usuario->getSenha()) &&
+                    $usuario->getPapel() === $dadosArray['papel'];
+            }));
+
+        $this->service->criar($dto);
+    }
+
+    public function testCriarUsuarioComDadosInvalidos(): void
+    {
+        $this->expectException(UsuarioInvalidoException::class);
+
+        $dto = DTO::fromArray([
+            'nome' => '', // Nome inválido
+            'email' => 'emailinvalido',
+            'senha' => '123',
+            'papel' => 'papelinvalido'
+        ]);
+
+        $this->repositorio
+            ->method('existePorEmail')
+            ->willReturn(false);
+
+        $this->service->criar($dto);
+    }
+
+    public function testAtualizarUsuarioComSucesso(): void
+    {
+        $idUsuario = 1;
+        $dadosAtualizacao = DTO::fromArray([
+            'nome' => 'Novo Nome',
+            'email' => 'novo@email.com',
+            'senha' => 'NovaSenha123!',
+            'papel' => 'admin'
+        ]);
+
+        $usuarioExistente = new Entity(
+            'Nome Antigo',
+            'antigo@email.com',
+            'hash_antigo',
+            $idUsuario,
+            'user'
+        );
+
+        // Mock do repositório
+        $this->repositorio
+            ->method('existePorEmail')
+            ->with('novo@email.com', $idUsuario)
+            ->willReturn(false);
+
+        $this->repositorio
+            ->method('buscarPorId')
+            ->with($idUsuario)
+            ->willReturn($usuarioExistente);
+
+        $this->repositorio
+            ->expects($this->once())
+            ->method('atualizar')
+            ->with($idUsuario, $this->callback(function ($dadosAtualizados) {
+                return $dadosAtualizados['nome'] === 'Novo Nome' &&
+                    $dadosAtualizados['email'] === 'novo@email.com' &&
+                    PasswordManager::verificar('NovaSenha123!', $dadosAtualizados['senha']);
+            }));
+
+        $this->service->atualizar($idUsuario, $dadosAtualizacao);
+    }
+
+    public function testAtualizarUsuarioSemAlterarSenha(): void
+    {
+        $idUsuario = 1;
+        $dadosAtualizacao = DTO::fromArray([
+            'nome' => 'Novo Nome',
+            'email' => 'novo@email.com',
+            'senha' => '', // Senha vazia não deve ser atualizada
+            'papel' => 'admin'
+        ]);
+
+        $usuarioExistente = new Entity(
+            'Nome Antigo',
+            'antigo@email.com',
+            'hash_antigo',
+            $idUsuario,
+            'user'
+        );
+
+        $this->repositorio
+            ->method('existePorEmail')
+            ->willReturn(false);
+
+        $this->repositorio
+            ->method('buscarPorId')
+            ->willReturn($usuarioExistente);
+
+        $this->repositorio
+            ->expects($this->once())
+            ->method('atualizar')
+            ->with($idUsuario, [
+                'nome' => 'Novo Nome',
+                'email' => 'novo@email.com',
+                'senha' => 'hash_antigo' // Senha mantém o hash original
+            ]);
+
+        $this->service->atualizar($idUsuario, $dadosAtualizacao);
+    }
+
+    public function testAtualizarUsuarioComDadosInvalidos(): void
+    {
+        $this->expectException(UsuarioInvalidoException::class);
+
+        $idUsuario = 1;
+        $dadosInvalidos = DTO::fromArray([
+            'nome' => '', // Nome inválido
+            'email' => 'emailinvalido',
+            'senha' => '123' // Senha fraca
+        ]);
+
+        $usuarioExistente = new Entity(
+            'Nome Válido',
+            'email@valido.com',
+            'hash_valido',
+            $idUsuario,
+            'user'
+        );
+
+        $this->repositorio
+            ->method('existePorEmail')
+            ->willReturn(false);
+
+        $this->repositorio
+            ->method('buscarPorId')
+            ->willReturn($usuarioExistente);
+
+        $this->service->atualizar($idUsuario, $dadosInvalidos);
+    }
 }

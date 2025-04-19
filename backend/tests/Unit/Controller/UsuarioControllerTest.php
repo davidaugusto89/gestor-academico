@@ -7,6 +7,7 @@ use App\Domain\Usuario\Service;
 use App\Domain\Usuario\DTO;
 use App\Domain\Usuario\Entity;
 use App\Utils\Response;
+use App\Core\HttpStatus;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,89 +17,120 @@ class UsuarioControllerTest extends TestCase
 {
     private UsuarioController $controller;
     private \PHPUnit\Framework\MockObject\MockObject $service;
+    private \PHPUnit\Framework\MockObject\MockObject $response;
 
     protected function setUp(): void
     {
-        Response::ativarModoTeste();
         $this->service = $this->createMock(Service::class);
-        $this->controller = new UsuarioController($this->service);
-        ob_start();
-    }
-
-    protected function tearDown(): void
-    {
-        Response::desativarModoTeste();
-        ob_end_clean();
+        $this->response = $this->createMock(Response::class);
+        $this->controller = new UsuarioController($this->service, $this->response);
     }
 
     public function testCriarUsuario(): void
     {
-        $this->service->expects($this->once())->method('criar');
-        $this->controller->criar([
+        $dados = [
             'nome' => 'João',
             'email' => 'joao@email.com',
             'senha' => 'Senha123!',
             'papel' => 'admin'
-        ]);
-        $saida = ob_get_clean();
-        $this->assertStringContainsString('Usuário cadastrado com sucesso', $saida);
-        ob_start();
+        ];
+
+        $this->service->expects($this->once())->method('criar');
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with(['mensagem' => 'Usuário cadastrado com sucesso.'], HttpStatus::CREATED);
+
+        $this->controller->criar($dados);
     }
 
     public function testListarUsuarios(): void
     {
-        $this->service->method('listarTodos')->willReturn([
-            'data' => [['id' => 1]],
-            'total' => 1
-        ]);
+        $retorno = ['data' => [['id' => 1]], 'total' => 1];
+
+        $this->service
+            ->method('listarTodos')
+            ->willReturn($retorno);
+
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with(
+                $this->callback(fn($res) => $res['total'] === 1 && isset($res['data'][0]['id'])),
+                HttpStatus::OK
+            );
+
         $this->controller->listar(['page' => 1]);
-        $saida = ob_get_clean();
-        $this->assertStringContainsString('"total": 1', $saida);
-        ob_start();
     }
 
     public function testBuscarUsuarioPorId(): void
     {
         $usuario = $this->createMock(Entity::class);
-        $usuario->method('jsonSerialize')->willReturn(['id' => 1, 'nome' => 'João']);
-        $this->service->method('buscarPorId')->willReturn($usuario);
+
+        $this->service
+            ->method('buscarPorId')
+            ->with(1)
+            ->willReturn($usuario);
+
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with($usuario, HttpStatus::OK);
+
         $this->controller->buscar(1);
-        $saida = ob_get_clean();
-        $this->assertStringContainsString('"nome": "João"', $saida);
-        ob_start();
     }
 
     public function testBuscarPorEmail(): void
     {
         $usuario = $this->createMock(Entity::class);
-        $usuario->method('jsonSerialize')->willReturn(['email' => 'joao@email.com']);
-        $this->service->method('buscarPorEmail')->willReturn($usuario);
+
+        $this->service
+            ->method('buscarPorEmail')
+            ->with('joao@email.com')
+            ->willReturn($usuario);
+
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with($usuario, HttpStatus::OK);
+
         $this->controller->buscarPorEmail('joao@email.com');
-        $saida = ob_get_clean();
-        $this->assertStringContainsString('"email": "joao@email.com"', $saida);
-        ob_start();
     }
 
     public function testAtualizarUsuario(): void
     {
-        $this->service->expects($this->once())->method('atualizar');
-        $this->controller->atualizar(1, [
+        $dados = [
             'nome' => 'João',
             'email' => 'joao@email.com',
             'senha' => 'Senha123!',
             'papel' => 'admin'
-        ]);
-        $saida = ob_get_clean();
-        $this->assertStringContainsString('Usuário atualizado com sucesso', $saida);
-        ob_start();
+        ];
+
+        $this->service
+            ->expects($this->once())
+            ->method('atualizar')
+            ->with(1, $this->isInstanceOf(DTO::class));
+
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with(['mensagem' => 'Usuário atualizado com sucesso.'], HttpStatus::OK);
+
+        $this->controller->atualizar(1, $dados);
     }
 
     public function testRemoverUsuario(): void
     {
-        $this->service->expects($this->once())->method('remover');
+        $this->service
+            ->expects($this->once())
+            ->method('remover')
+            ->with(1);
+
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with(['mensagem' => 'Usuário removido com sucesso.'], HttpStatus::OK);
+
         $this->controller->remover(1);
-        $saida = ob_get_clean();
-        $this->assertStringContainsString('Usuário removido com sucesso', $saida);
-        ob_start();
     }
 }

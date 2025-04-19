@@ -41,7 +41,7 @@ class Response
      * @param mixed $dados Dados para a resposta.
      * @param int $status Código HTTP.
      */
-    public static function json(mixed $dados, int $status = HttpStatus::OK): void
+    public function json(mixed $dados, int $status = HttpStatus::OK): void
     {
         self::enviarCabecalho($status);
         echo json_encode($dados, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);

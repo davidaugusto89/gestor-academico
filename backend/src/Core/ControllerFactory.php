@@ -24,11 +24,27 @@ use App\Domain\Usuario\RepositoryImpl as UsuarioRepository;
 use App\Domain\Usuario\Service as UsuarioService;
 use App\Domain\Usuario\Validator as UsuarioValidator;
 
+use App\Utils\Response;
+use App\Core\TokenManager;
+
 /**
  * Fábrica de controllers responsável por instanciar os controladores com suas dependências.
  */
 class ControllerFactory
 {
+    /**
+     * ControllerFactory constructor.
+     *
+     * @param \PDO $pdo Conexão com o banco de dados.
+     * @param Response $response Instância responsável por retornar respostas HTTP.
+     * @param TokenManager $tokenManager Gerenciador de tokens de autenticação.
+     */
+    public function __construct(
+        private readonly \PDO $pdo,
+        private readonly Response $response,
+        private readonly TokenManager $tokenManager
+    ) {}
+
     /**
      * Cria e retorna uma instância do controller especificado.
      *
@@ -37,48 +53,50 @@ class ControllerFactory
      *
      * @throws \RuntimeException Se o controller não estiver registrado.
      */
-    public static function make(string $controllerClass): object
+    public function make(string $controllerClass): object
     {
         return match ($controllerClass) {
             AlunoController::class => new AlunoController(
                 new AlunoService(
-                    new AlunoRepository(Database::connect())
-                )
+                    new AlunoRepository($this->pdo)
+                ),
+                $this->response
             ),
 
             TurmaController::class => new TurmaController(
                 new TurmaService(
-                    new TurmaRepository(Database::connect()),
+                    new TurmaRepository($this->pdo),
                     new TurmaValidator()
-                )
+                ),
+                $this->response
             ),
 
             MatriculaController::class => new MatriculaController(
                 new MatriculaService(
-                    new MatriculaRepository(Database::connect())
-                )
+                    new MatriculaRepository($this->pdo)
+                ),
+                $this->response
             ),
 
             AuthController::class => new AuthController(
                 new UsuarioService(
-                    new UsuarioRepository(Database::connect()),
+                    new UsuarioRepository($this->pdo),
                     new UsuarioValidator()
-                )
+                ),
+                $this->tokenManager,
+                $this->response
             ),
 
             HealthController::class => new HealthController(),
 
             UsuarioController::class => new UsuarioController(
                 new UsuarioService(
-                    new UsuarioRepository(Database::connect()),
+                    new UsuarioRepository($this->pdo),
                     new UsuarioValidator()
-                )
+                ),
+                $this->response
             ),
 
-            /*
-             * Adicionado controle de exemplo
-             * para testes
-             */
             ExampleController::class => new ExampleController(),
 
             default => throw new \RuntimeException("Controller não registrado: $controllerClass")

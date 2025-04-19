@@ -6,44 +6,45 @@ use PHPUnit\Framework\TestCase;
 use App\Controller\AlunoController;
 use App\Domain\Aluno\Service;
 use App\Domain\Aluno\DTO;
-use App\Utils\Response;
 use App\Domain\Aluno\Entity;
+use App\Utils\Response;
 use App\Core\HttpStatus;
 
 class AlunoControllerTest extends TestCase
 {
     private Service $service;
+    private Response $response;
     private AlunoController $controller;
 
     protected function setUp(): void
     {
         parent::setUp();
-        Response::ativarModoTeste();
         $this->service = $this->createMock(Service::class);
-        $this->controller = new AlunoController($this->service);
-    }
-
-    protected function tearDown(): void
-    {
-        Response::desativarModoTeste();
-        parent::tearDown();
+        $this->response = $this->createMock(Response::class);
+        $this->controller = new AlunoController($this->service, $this->response);
     }
 
     public function testCriar(): void
     {
-        $dados = ['nome' => 'Maria', 'email' => 'maria@email.com', 'senha' => 'Senha123!', 'cpf' => '123.456.789-00', 'data_nascimento' => '01/01/2000'];
+        $dados = [
+            'nome' => 'Maria',
+            'email' => 'maria@email.com',
+            'senha' => 'Senha123!',
+            'cpf' => '123.456.789-00',
+            'data_nascimento' => '01/01/2000'
+        ];
 
         $this->service
             ->expects($this->once())
             ->method('criar')
             ->with($this->isInstanceOf(DTO::class));
 
-        ob_start();
-        $this->controller->criar($dados);
-        $output = ob_get_clean();
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with(['mensagem' => 'Aluno cadastrado com sucesso.'], HttpStatus::CREATED);
 
-        $this->assertStringContainsString('Aluno cadastrado com sucesso.', $output);
-        $this->assertEquals(201, \App\Utils\Response::getStatus());
+        $this->controller->criar($dados);
     }
 
     public function testListar(): void
@@ -56,12 +57,15 @@ class AlunoControllerTest extends TestCase
             ->method('listarTodos')
             ->willReturn($retornoSimulado);
 
-        ob_start();
-        $this->controller->listar($params);
-        $output = ob_get_clean();
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with(
+                $this->callback(fn($resultado) => isset($resultado['total']) && $resultado['total'] === 1),
+                HttpStatus::OK
+            );
 
-        $this->assertJson($output);
-        $this->assertStringContainsString('"total": 1', $output);
+        $this->controller->listar($params);
     }
 
     public function testBuscar(): void
@@ -74,44 +78,53 @@ class AlunoControllerTest extends TestCase
             ->with(5)
             ->willReturn($entidade);
 
-        ob_start();
-        $this->controller->buscar(5);
-        $output = ob_get_clean();
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with($entidade, HttpStatus::OK);
 
-        $this->assertJson($output);
-        $this->assertStringContainsString('"nome": "Carlos"', $output);
+        $this->controller->buscar(5);
     }
 
     public function testBuscarPorNome(): void
     {
+        $resultado = [['id' => 1, 'nome' => 'João']];
+
         $this->service
             ->expects($this->once())
             ->method('buscarPorNome')
             ->with('João')
-            ->willReturn([['id' => 1, 'nome' => 'João']]);
+            ->willReturn($resultado);
 
-        ob_start();
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with($resultado, HttpStatus::OK);
+
         $this->controller->buscarPorNome(['nome' => 'João']);
-        $output = ob_get_clean();
-
-        $this->assertJson($output);
-        $this->assertStringContainsString('"nome": "João"', $output);
     }
 
     public function testAtualizar(): void
     {
-        $dados = ['nome' => 'Maria', 'email' => 'maria@email.com', 'senha' => 'Senha123!', 'cpf' => '123.456.789-00', 'data_nascimento' => '01/01/2000'];
+        $dados = [
+            'nome' => 'Maria',
+            'email' => 'maria@email.com',
+            'senha' => 'Senha123!',
+            'cpf' => '123.456.789-00',
+            'data_nascimento' => '01/01/2000'
+        ];
 
         $this->service
             ->expects($this->once())
             ->method('atualizar')
             ->with(2, $this->isInstanceOf(DTO::class));
 
-        ob_start();
-        $this->controller->atualizar(2, $dados);
-        $output = ob_get_clean();
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with(['mensagem' => 'Aluno atualizado com sucesso.'], HttpStatus::OK);
 
-        $this->assertStringContainsString('Aluno atualizado com sucesso.', $output);
+        $this->controller->atualizar(2, $dados);
     }
 
     public function testRemover(): void
@@ -121,10 +134,11 @@ class AlunoControllerTest extends TestCase
             ->method('remover')
             ->with(7);
 
-        ob_start();
-        $this->controller->remover(7);
-        $output = ob_get_clean();
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with(['mensagem' => 'Aluno removido com sucesso.'], HttpStatus::OK);
 
-        $this->assertStringContainsString('Aluno removido com sucesso.', $output);
+        $this->controller->remover(7);
     }
 }

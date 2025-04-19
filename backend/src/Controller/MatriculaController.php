@@ -16,9 +16,11 @@ class MatriculaController extends BaseController
 {
     /**
      * @param Service $service Serviço de regras de negócio para matrícula.
+     * @param Response $response Serviço responsável pelo envio de respostas JSON.
      */
     public function __construct(
-        private readonly Service $service
+        private readonly Service $service,
+        private readonly Response $response
     ) {}
 
     /**
@@ -32,7 +34,7 @@ class MatriculaController extends BaseController
         $dto = DTO::fromArray($dados);
         $this->service->matricular($dto);
 
-        Response::json(['mensagem' => 'Matrícula realizada com sucesso.'], HttpStatus::CREATED);
+        $this->response->json(['mensagem' => 'Matrícula realizada com sucesso.'], HttpStatus::CREATED);
     }
 
     /**
@@ -51,7 +53,7 @@ class MatriculaController extends BaseController
             $retorno['total']
         );
 
-        Response::json($resultado, HttpStatus::OK);
+        $this->response->json($resultado, HttpStatus::OK);
     }
 
     /**
@@ -63,7 +65,7 @@ class MatriculaController extends BaseController
     public function listarPorTurma(int $turmaId): void
     {
         $alunos = $this->service->listarPorTurma($turmaId);
-        Response::json($alunos, HttpStatus::OK);
+        $this->response->json($alunos, HttpStatus::OK);
     }
 
     /**
@@ -77,6 +79,6 @@ class MatriculaController extends BaseController
         $dto = DTO::fromArray($dados);
         $this->service->remover($dto);
 
-        Response::json(['mensagem' => 'Matrícula removida com sucesso.'], HttpStatus::OK);
+        $this->response->json(['mensagem' => 'Matrícula removida com sucesso.'], HttpStatus::OK);
     }
 }

@@ -4,70 +4,64 @@ namespace App\Core;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use UnexpectedValueException;
 
-const SESSION_DURATION = 60 * 60;
+const SESSION_DURATION = 3600;
 
 /**
- * Classe para gerenciar a geração e validação de tokens JWT.
- * Utiliza o Firebase JWT para codificar e decodificar tokens.
+ * Gerencia a geração e validação de tokens JWT.
  */
 class TokenManager
 {
-    /**
-     * @var string|null A chave secreta para codificar e decodificar tokens.
-     */
+    /** @var string|null */
     private static ?string $secret = null;
 
     /**
-     * Carrega a chave secreta do ambiente ou das variáveis de ambiente.
+     * Carrega a chave secreta ou lança se não estiver configurada.
      *
-     * @return void
+     * @throws UnexpectedValueException
      */
     private static function loadSecret(): void
     {
-        if (!self::$secret) {
-            self::$secret = $_ENV['JWT_SECRET'] ?? getenv('JWT_SECRET') ?? '';
+        if (self::$secret === null) {
+            $secret = $_ENV['JWT_SECRET'] ?? getenv('JWT_SECRET');
+            if (!$secret) {
+                throw new UnexpectedValueException('Chave secreta não configurada');
+            }
+            self::$secret = $secret;
         }
     }
 
     /**
-     * Gera um token JWT com base no payload fornecido.
-     *
-     * @param array $payload Dados a serem incluídos no payload do token.
-     * @param int $expiraEmSegundos Tempo em segundos até o token expirar (default: 1 hora).
-     *
-     * @return string O token JWT gerado.
-     *
-     * @throws \UnexpectedValueException Se a chave secreta não for configurada.
+     * @param array $payload
+     * @param int   $expiraEmSegundos
+     * @return string
+     * @throws UnexpectedValueException
      */
-    public static function gerar(array $payload, int $expiraEmSegundos = SESSION_DURATION): string
+    public function gerar(array $payload, int $expiraEmSegundos = SESSION_DURATION): string
     {
         self::loadSecret();
 
         $agora = time();
-        $payload = array_merge($payload, [
+        $dados = array_merge($payload, [
             'iat' => $agora,
             'exp' => $agora + $expiraEmSegundos,
         ]);
 
-        return JWT::encode($payload, self::$secret, 'HS256');
+        return JWT::encode($dados, self::$secret, 'HS256');
     }
 
     /**
-     * Valida um token JWT e retorna seus dados decodificados.
-     *
-     * @param string $token O token JWT a ser validado.
-     *
-     * @return array|null Os dados decodificados do token, ou null se o token for inválido.
+     * @param string $token
+     * @return array|null
      */
     public static function validar(string $token): ?array
     {
-        self::loadSecret();
-
         try {
+            self::loadSecret();
             $decoded = JWT::decode($token, new Key(self::$secret, 'HS256'));
             return (array) $decoded;
-        } catch (\Exception) {
+        } catch (\Throwable $e) {
             return null;
         }
     }

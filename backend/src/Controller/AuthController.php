@@ -15,9 +15,13 @@ class AuthController extends BaseController
 {
     /**
      * @param Service $service Serviço de autenticação de usuários.
+     * @param TokenManager $tokenManager Gerador de token de autenticação.
+     * @param Response $response Resposta HTTP.
      */
     public function __construct(
-        private readonly Service $service
+        private readonly Service $service,
+        private readonly TokenManager $tokenManager,
+        private readonly Response $response
     ) {}
 
     /**
@@ -31,13 +35,13 @@ class AuthController extends BaseController
         try {
             $usuario = $this->service->autenticar($dados['email'], $dados['senha']);
 
-            $token = TokenManager::gerar([
+            $token = $this->tokenManager->gerar([
                 'id'    => $usuario->getId(),
                 'email' => $usuario->getEmail(),
                 'papel' => $usuario->getPapel()
             ]);
 
-            Response::json([
+            $this->response->json([
                 'token'   => $token,
                 'usuario' => [
                     'id'    => $usuario->getId(),
@@ -47,7 +51,7 @@ class AuthController extends BaseController
                 ]
             ], HttpStatus::OK);
         } catch (\Exception $e) {
-            Response::json([
+            $this->response->json([
                 'error' => $e->getMessage()
             ], HttpStatus::UNAUTHORIZED);
         }
@@ -61,7 +65,7 @@ class AuthController extends BaseController
     public function me(): void
     {
         $usuario = $this->usuarioAutenticado();
-        Response::json([
+        $this->response->json([
             'id'    => $usuario->getId(),
             'nome'  => $usuario->getNome(),
             'email' => $usuario->getEmail(),

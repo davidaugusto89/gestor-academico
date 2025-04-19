@@ -16,9 +16,11 @@ class TurmaController extends BaseController
 {
     /**
      * @param Service $service Serviço responsável pela lógica de turmas.
+     * @param Response $response Serviço responsável pelo envio de respostas JSON.
      */
     public function __construct(
-        private readonly Service $service
+        private readonly Service $service,
+        private readonly Response $response
     ) {}
 
     /**
@@ -32,7 +34,7 @@ class TurmaController extends BaseController
         $dto = DTO::fromArray($dados);
         $this->service->criar($dto);
 
-        Response::json(['mensagem' => 'Turma cadastrada com sucesso.'], HttpStatus::CREATED);
+        $this->response->json(['mensagem' => 'Turma cadastrada com sucesso.'], HttpStatus::CREATED);
     }
 
     /**
@@ -51,7 +53,7 @@ class TurmaController extends BaseController
             $retorno['total']
         );
 
-        Response::json($resultado, HttpStatus::OK);
+        $this->response->json($resultado, HttpStatus::OK);
     }
 
     /**
@@ -63,7 +65,7 @@ class TurmaController extends BaseController
     public function buscar(int $id): void
     {
         $turma = $this->service->buscarPorId($id);
-        Response::json($turma, HttpStatus::OK);
+        $this->response->json($turma, HttpStatus::OK);
     }
 
     /**
@@ -75,7 +77,7 @@ class TurmaController extends BaseController
     public function buscarPorNome(string $nome): void
     {
         $turmas = $this->service->buscarPorNome($nome);
-        Response::json($turmas, HttpStatus::OK);
+        $this->response->json($turmas, HttpStatus::OK);
     }
 
     /**
@@ -90,7 +92,7 @@ class TurmaController extends BaseController
         $dto = DTO::fromArray($dados);
         $this->service->atualizar($id, $dto);
 
-        Response::json(['mensagem' => 'Turma atualizada com sucesso.'], HttpStatus::OK);
+        $this->response->json(['mensagem' => 'Turma atualizada com sucesso.'], HttpStatus::OK);
     }
 
     /**
@@ -102,6 +104,6 @@ class TurmaController extends BaseController
     public function remover(int $id): void
     {
         $this->service->remover($id);
-        Response::json(['mensagem' => 'Turma removida com sucesso.'], HttpStatus::OK);
+        $this->response->json(['mensagem' => 'Turma removida com sucesso.'], HttpStatus::OK);
     }
 }

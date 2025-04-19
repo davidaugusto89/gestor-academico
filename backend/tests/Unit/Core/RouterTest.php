@@ -4,7 +4,8 @@ namespace Tests\Unit\Core;
 
 use PHPUnit\Framework\TestCase;
 use App\Core\Router;
-use App\Controller\ExampleController;
+use Tests\Fake\ControllerFactoryStub;
+use Tests\Fake\FakeController;
 
 class RouterTest extends TestCase
 {
@@ -12,49 +13,44 @@ class RouterTest extends TestCase
     {
         parent::setUp();
 
+        // Define valores padrão para variáveis de ambiente simuladas
         $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/';
         $_GET = [];
         $_POST = [];
-
-        // Registra uma classe fake para simular o controller
-        if (!class_exists(ExampleController::class)) {
-            eval('
-                namespace App\Controllers;
-                class ExampleController {
-                    public static string $executadoCom = "";
-
-                    public function show($id, $query = []) {
-                        self::$executadoCom = "show: $id / query: " . json_encode($query);
-                    }
-                }
-            ');
-        }
     }
 
     public function testGetRouteDispatchesCorrectly(): void
     {
+        $factoryStub = new ControllerFactoryStub();
+        $router = new Router($factoryStub);
+
+        // Registra rota
+        $router->get('/teste', [FakeController::class, 'index']);
+
+        // Simula requisição
+        $_SERVER['REQUEST_URI'] = '/teste';
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['REQUEST_URI'] = '/usuarios/42';
 
-        $router = new Router();
-        $router->get('/usuarios/{id}', [ExampleController::class, 'show']);
+        ob_start();
+        $result = $router->dispatch();
+        $output = ob_get_clean();
 
-        $executado = $router->dispatch();
-
-        $this->assertTrue($executado);
-        $this->assertEquals('show: 42 / query: []', ExampleController::$executadoCom);
+        $this->assertTrue($result);
+        $this->assertEquals('ok', $output);
     }
 
     public function testReturnsFalseForUnmatchedRoute(): void
     {
+        $factoryStub = new ControllerFactoryStub();
+        $router = new Router($factoryStub);
+
+        // Simula requisição inválida
+        $_SERVER['REQUEST_URI'] = '/rota-que-nao-existe';
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['REQUEST_URI'] = '/nao-existe';
 
-        $router = new Router();
-        $router->get('/usuarios/{id}', [ExampleController::class, 'show']);
+        $result = $router->dispatch();
 
-        $executado = $router->dispatch();
-
-        $this->assertFalse($executado);
+        $this->assertFalse($result);
     }
 }

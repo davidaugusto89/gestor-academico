@@ -152,44 +152,55 @@ class MatriculaRepositoryImplTest extends TestCase
         $repo->exposeMapeamento($row);
     }
 
-    public function testListarTodosRetornaDadosComFormatacaoEsperada()
+    public function testListarTodosComPaginacao(): void
     {
         $pdo = $this->createMock(\PDO::class);
+        $stmtSelect = $this->createMock(\PDOStatement::class);
+        $stmtCount = $this->createMock(\PDOStatement::class);
 
-        $repo = new class($pdo) extends RepositoryImpl {
-            public function listarTodos(array $params, string $ordem = 'data_matricula:desc', ?array $camposPermitidos = null): array
-            {
-                $row = [
-                    'aluno_id' => 1,
-                    'aluno_nome' => 'João da Silva',
-                    'aluno_cpf' => '12345678901',
-                    'turma_id' => 2,
-                    'turma_nome' => 'Turma A',
-                    'data_matricula' => '2024-04-18',
-                    'id' => 99,
-                ];
+        // Mock do fetch da contagem
+        $stmtCount->method('execute')->willReturn(true);
+        $stmtCount->method('fetch')->willReturn(['total' => 1]);
 
-                return [
-                    'data' => [
-                        [
-                            'aluno_id' => $row['aluno_id'],
-                            'aluno_nome' => $row['aluno_nome'],
-                            'aluno_cpf' => $row['aluno_cpf'],
-                            'turma_id' => $row['turma_id'],
-                            'turma_nome' => $row['turma_nome'],
-                            'data_matricula' => $row['data_matricula'],
-                        ]
-                    ],
-                    'total' => 1
-                ];
+        // Mock do fetch dos dados
+        $stmtSelect->method('execute')->willReturn(true);
+        $stmtSelect->method('fetchAll')->willReturn([
+            [
+                'aluno_id' => 1,
+                'aluno_nome' => 'João Silva',
+                'aluno_cpf' => '12345678901',
+                'turma_id' => 2,
+                'turma_nome' => 'Turma A',
+                'data_matricula' => '2024-04-20',
+                'id' => 99
+            ]
+        ]);
+
+        // Lógica para retornar o statement correto dependendo da query
+        $pdo->method('prepare')->willReturnCallback(function ($query) use ($stmtCount, $stmtSelect) {
+            if (stripos($query, 'COUNT(*)') !== false) {
+                return $stmtCount;
             }
-        };
 
-        $resultado = $repo->listarTodos([]);
+            if (stripos($query, 'SELECT a.nome AS aluno_nome') !== false) {
+                return $stmtSelect;
+            }
+
+            return $this->createMock(\PDOStatement::class); // fallback para evitar erro
+        });
+
+        $repo = new RepositoryImpl($pdo);
+        $resultado = $repo->listarTodos([
+            'page' => 1,
+            'per_page' => 10
+        ]);
 
         $this->assertIsArray($resultado);
+        $this->assertArrayHasKey('data', $resultado);
+        $this->assertArrayHasKey('total', $resultado);
         $this->assertCount(1, $resultado['data']);
-        $this->assertEquals('João da Silva', $resultado['data'][0]['aluno_nome']);
+        $this->assertEquals('João Silva', $resultado['data'][0]['aluno_nome']);
         $this->assertEquals('Turma A', $resultado['data'][0]['turma_nome']);
+        $this->assertEquals('2024-04-20', $resultado['data'][0]['data_matricula']);
     }
 }

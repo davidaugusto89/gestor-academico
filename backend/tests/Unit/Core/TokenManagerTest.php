@@ -1,9 +1,6 @@
 <?php
 
-namespace Tests\Unit\Core;
-
 use PHPUnit\Framework\TestCase;
-use App\Core\EnvLoader;
 use App\Core\TokenManager;
 
 class TokenManagerTest extends TestCase
@@ -11,34 +8,46 @@ class TokenManagerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        // Limpa qualquer JWT_SECRET anterior
-        putenv('JWT_SECRET');
-        unset($_ENV['JWT_SECRET'], $_SERVER['JWT_SECRET']);
-
-        // Carrega o .env.test que deve conter JWT_SECRET
-        $envPath = __DIR__ . '/../../../';
-        EnvLoader::load($envPath, '.env.test');
+        $_ENV['JWT_SECRET'] = 'test_secret';
     }
 
-    public function testGerarERetornarTokenValido(): void
+    public function testGerarRetornaTokenValido(): void
     {
-        $payload = ['user_id' => 123];
+        $payload = ['id' => 123, 'nome' => 'Fulano'];
+        $tokenManager = new TokenManager();
 
-        $token = TokenManager::gerar($payload);
-        $this->assertIsString($token);
+        $token = $tokenManager->gerar($payload, 3600); // 1h
 
-        $decoded = TokenManager::validar($token);
-        $this->assertIsArray($decoded);
-        $this->assertEquals(123, $decoded['user_id']);
-        $this->assertArrayHasKey('iat', $decoded);
-        $this->assertArrayHasKey('exp', $decoded);
+        $this->assertIsString($token, 'O token gerado deve ser uma string JWT');
+
+        // Valida se o token pode ser decodificado
+        $dados = TokenManager::validar($token);
+
+        $this->assertIsArray($dados);
+        $this->assertArrayHasKey('id', $dados);
+        $this->assertEquals(123, $dados['id']);
+        $this->assertArrayHasKey('nome', $dados);
+        $this->assertEquals('Fulano', $dados['nome']);
+        $this->assertArrayHasKey('iat', $dados);
+        $this->assertArrayHasKey('exp', $dados);
+        $this->assertGreaterThan($dados['iat'], $dados['exp']);
     }
 
-    public function testTokenInvalidoRetornaNull(): void
+    public function testGerarLancaExcecaoSeJwtSecretNaoDefinido(): void
     {
-        $tokenInvalido = 'invalid.token.structure';
-        $decoded = TokenManager::validar($tokenInvalido);
-        $this->assertNull($decoded);
+        unset($_ENV['JWT_SECRET']);
+        putenv('JWT_SECRET'); // limpa fallback getenv também
+
+        // limpa o cache de TokenManager::$secret
+        $reflection = new ReflectionClass(\App\Core\TokenManager::class);
+        $property = $reflection->getProperty('secret');
+        $property->setAccessible(true);
+        $property->setValue(null, null);
+
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('Chave secreta não configurada');
+
+        $tokenManager = new TokenManager();
+        $tokenManager->gerar(['id' => 1]);
     }
 }

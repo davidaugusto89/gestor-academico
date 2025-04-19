@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Controller;
+namespace Tests\Fake;
 
 class FakeController
 {
-    public static array $registro = [];
-
-    public function index(array $params = [])
+    public function index()
     {
-        self::$registro = ['chamado' => true, 'params' => $params];
+        echo 'ok';
     }
 }

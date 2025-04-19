@@ -7,6 +7,7 @@ use App\Controller\TurmaController;
 use App\Domain\Turma\Service;
 use App\Domain\Turma\DTO;
 use App\Utils\Response;
+use App\Core\HttpStatus;
 
 /**
  * Testes unitários para o controller de Turma.
@@ -14,93 +15,112 @@ use App\Utils\Response;
 class TurmaControllerTest extends TestCase
 {
     private Service $service;
+    private Response $response;
     private TurmaController $controller;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->service = $this->createMock(Service::class);
-        $this->controller = new TurmaController($this->service);
-        Response::ativarModoTeste();
-        ob_start();
-    }
-
-    protected function tearDown(): void
-    {
-        ob_end_clean();
-        Response::desativarModoTeste();
+        $this->response = $this->createMock(Response::class);
+        $this->controller = new TurmaController($this->service, $this->response);
     }
 
     public function testCriarTurmaRetornaMensagemDeSucesso(): void
     {
-        $this->service->expects($this->once())->method('criar');
+        $this->service
+            ->expects($this->once())
+            ->method('criar');
+
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with(['mensagem' => 'Turma cadastrada com sucesso.'], HttpStatus::CREATED);
+
         $this->controller->criar(['nome' => 'PHP', 'descricao' => 'Avançado']);
-        $saida = ob_get_clean();
-        $this->assertStringContainsString('Turma cadastrada com sucesso.', $saida);
-        ob_start();
     }
 
     public function testListarTurmasRetornaListaComTotal(): void
     {
+        $esperado = [
+            'data' => [['id' => 1, 'nome' => 'PHP']],
+            'total' => 1
+        ];
+
         $this->service
             ->method('listarTodos')
-            ->willReturn([
-                'data' => [['id' => 1, 'nome' => 'PHP']],
-                'total' => 1
-            ]);
+            ->willReturn($esperado);
+
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with(
+                $this->callback(fn($res) => $res['data'][0]['nome'] === 'PHP' && $res['total'] === 1),
+                HttpStatus::OK
+            );
 
         $this->controller->listar([]);
-        $saida = ob_get_clean();
-        $this->assertStringContainsString('PHP', $saida);
-        $this->assertStringContainsString('"total": 1', $saida);
-        ob_start();
     }
 
     public function testBuscarTurmaPorIdRetornaTurma(): void
     {
         $turmaMock = $this->createMock(\App\Domain\Turma\Entity::class);
-        $turmaMock->method('jsonSerialize')->willReturn([
-            'id' => 1,
-            'nome' => 'PHP'
-        ]);
 
         $this->service
             ->method('buscarPorId')
+            ->with(1)
             ->willReturn($turmaMock);
 
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with($turmaMock, HttpStatus::OK);
+
         $this->controller->buscar(1);
-        $saida = ob_get_clean();
-        $this->assertStringContainsString('"nome": "PHP"', $saida);
-        ob_start();
     }
 
     public function testBuscarPorNomeRetornaLista(): void
     {
+        $resultado = [['id' => 1, 'nome' => 'PHP']];
+
         $this->service
             ->method('buscarPorNome')
-            ->willReturn([['id' => 1, 'nome' => 'PHP']]);
+            ->with('PHP')
+            ->willReturn($resultado);
+
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with($resultado, HttpStatus::OK);
 
         $this->controller->buscarPorNome('PHP');
-        $saida = ob_get_clean();
-        $this->assertStringContainsString('"nome": "PHP"', $saida);
-        ob_start();
     }
 
     public function testAtualizarTurmaRetornaMensagem(): void
     {
-        $this->service->expects($this->once())->method('atualizar');
+        $this->service
+            ->expects($this->once())
+            ->method('atualizar');
+
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with(['mensagem' => 'Turma atualizada com sucesso.'], HttpStatus::OK);
+
         $this->controller->atualizar(1, ['nome' => 'PHP']);
-        $saida = ob_get_clean();
-        $this->assertStringContainsString('Turma atualizada com sucesso.', $saida);
-        ob_start();
     }
 
     public function testRemoverTurmaRetornaMensagem(): void
     {
-        $this->service->expects($this->once())->method('remover');
+        $this->service
+            ->expects($this->once())
+            ->method('remover');
+
+        $this->response
+            ->expects($this->once())
+            ->method('json')
+            ->with(['mensagem' => 'Turma removida com sucesso.'], HttpStatus::OK);
+
         $this->controller->remover(1);
-        $saida = ob_get_clean();
-        $this->assertStringContainsString('Turma removida com sucesso.', $saida);
-        ob_start();
     }
 }

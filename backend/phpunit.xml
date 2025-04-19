@@ -4,6 +4,7 @@
          bootstrap="tests/bootstrap.php"
          cacheResult="false"
          failOnEmptyTestSuite="true"
+         failOnWarning="true"
          executionOrder="random"
          colors="true">
 

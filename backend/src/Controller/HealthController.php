@@ -11,13 +11,20 @@ use App\Utils\Response;
 class HealthController extends BaseController
 {
     /**
+     * @param Response $response Serviço responsável pelo envio de respostas JSON.
+     */
+    public function __construct(
+        private readonly Response $response
+    ) {}
+
+    /**
      * Retorna um status indicando que a API está online.
      *
      * @return void
      */
     public function health(): void
     {
-        Response::json([
+        $this->response->json([
             'status' => 'It’s a trap! Just kidding, API is online.',
             'force' => 'strong',
             'timestamp' => time()

@@ -132,4 +132,32 @@ class UsuarioRepositoryImplTest extends TestCase
 
         $this->assertTrue($resultado);
     }
+
+    public function testMapearParaEntidadeConverteDadosCorretamente(): void
+    {
+        // Dados de exemplo que seriam retornados do banco de dados
+        $dados = [
+            'id' => '42', // string que será convertida para int
+            'nome' => 'João Silva',
+            'email' => 'joao@email.com',
+            'senha' => '$2y$10$hashedpassword',
+            'papel' => 'admin'
+        ];
+
+        // Usando Reflection para testar método protegido
+        $reflection = new \ReflectionClass(RepositoryImpl::class);
+        $method = $reflection->getMethod('mapearParaEntidade');
+        $method->setAccessible(true);
+
+        /** @var Entity $entidade */
+        $entidade = $method->invokeArgs($this->repositorio, [$dados]);
+
+        // Verificações
+        $this->assertInstanceOf(Entity::class, $entidade);
+        $this->assertEquals(42, $entidade->getId()); // Verifica conversão para int
+        $this->assertEquals('João Silva', $entidade->getNome());
+        $this->assertEquals('joao@email.com', $entidade->getEmail());
+        $this->assertEquals('$2y$10$hashedpassword', $entidade->getSenha());
+        $this->assertEquals('admin', $entidade->getPapel());
+    }
 }

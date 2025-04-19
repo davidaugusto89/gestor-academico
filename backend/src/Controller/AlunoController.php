@@ -16,9 +16,11 @@ class AlunoController extends BaseController
 {
     /**
      * @param Service $service Serviço de regras de negócio para alunos.
+     * @param Response $response Serviço responsável pelo envio de respostas JSON.
      */
     public function __construct(
-        private readonly Service $service
+        private readonly Service $service,
+        private readonly Response $response
     ) {}
 
     /**
@@ -32,7 +34,7 @@ class AlunoController extends BaseController
         $dto = DTO::fromArray($dados);
         $this->service->criar($dto);
 
-        Response::json(['mensagem' => 'Aluno cadastrado com sucesso.'], HttpStatus::CREATED);
+        $this->response->json(['mensagem' => 'Aluno cadastrado com sucesso.'], HttpStatus::CREATED);
     }
 
     /**
@@ -51,7 +53,7 @@ class AlunoController extends BaseController
             $retorno['total']
         );
 
-        Response::json($resultado, HttpStatus::OK);
+        $this->response->json($resultado, HttpStatus::OK);
     }
 
     /**
@@ -63,7 +65,7 @@ class AlunoController extends BaseController
     public function buscar(int $id): void
     {
         $aluno = $this->service->buscarPorId($id);
-        Response::json($aluno, HttpStatus::OK);
+        $this->response->json($aluno, HttpStatus::OK);
     }
 
     /**
@@ -76,7 +78,7 @@ class AlunoController extends BaseController
     {
         $nome = $dados['nome'] ?? '';
         $alunos = $this->service->buscarPorNome($nome);
-        Response::json($alunos, HttpStatus::OK);
+        $this->response->json($alunos, HttpStatus::OK);
     }
 
     /**
@@ -91,7 +93,7 @@ class AlunoController extends BaseController
         $dto = DTO::fromArray($dados);
         $this->service->atualizar($id, $dto);
 
-        Response::json(['mensagem' => 'Aluno atualizado com sucesso.'], HttpStatus::OK);
+        $this->response->json(['mensagem' => 'Aluno atualizado com sucesso.'], HttpStatus::OK);
     }
 
     /**
@@ -103,6 +105,6 @@ class AlunoController extends BaseController
     public function remover(int $id): void
     {
         $this->service->remover($id);
-        Response::json(['mensagem' => 'Aluno removido com sucesso.'], HttpStatus::OK);
+        $this->response->json(['mensagem' => 'Aluno removido com sucesso.'], HttpStatus::OK);
     }
 }
