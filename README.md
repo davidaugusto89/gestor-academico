@@ -170,7 +170,7 @@ docker exec -it gestor-academico-backend composer test:coverage:xml
 
 <img src="docs/images/print-coverage-report.png" alt="Cobertura de Testes" width="700"/>
 
-- Cobertura atual: **92.11%**
+- Cobertura atual: **92%**
 - Gerado com `PHPUnit` + `Xdebug`
 - Relatório acessível em: [http://localhost/coverage-report/index.html](http://localhost/coverage-report/index.html)
 
