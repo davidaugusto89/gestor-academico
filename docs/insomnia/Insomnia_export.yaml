@@ -1,0 +1,758 @@
+type: collection.insomnia.rest/5.0
+name: Gestor Acadêmico
+meta:
+  id: wrk_58b026eb099d4bcfb65dbb1155c54cc8
+  created: 1744877004189
+  modified: 1744877004189
+collection:
+  - name: 002 - Auth
+    meta:
+      id: fld_4a89d077010d405d856124f1a313f891
+      created: 1744877432461
+      modified: 1744969563567
+      sortKey: -1744877379376
+    children:
+      - url: "{{ _.baseURL }}login"
+        name: Login
+        meta:
+          id: req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90
+          created: 1744877440349
+          modified: 1744992213047
+          isPrivate: false
+          sortKey: -1744877440349
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email": "admin@example.com",
+            	"senha": "SenhaForte123!"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.2
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}me"
+        name: Me
+        meta:
+          id: req_b2a7872325ff4a7e956e2e4f6a4c33dc
+          created: 1744898797226
+          modified: 1744898807177
+          isPrivate: false
+          sortKey: -1744877440249
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_511488a1518f419cbdd89d3420aa48f8
+          - id: pair_60691a0e7b884d978c00c20141889a46
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 003 - Alunos
+    meta:
+      id: fld_f91a65b679404b4d845c88b21d6d3d81
+      created: 1744879274278
+      modified: 1744969591320
+      sortKey: -1743679051746
+    children:
+      - url: "{{ _.baseURL }}alunos?itemsPerPage=1000000"
+        name: Listar todos
+        meta:
+          id: req_fb4df943465b44d081caeba1fecf62f8
+          created: 1744879274279
+          modified: 1744975580120
+          isPrivate: false
+          sortKey: -1744877440349
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_511488a1518f419cbdd89d3420aa48f8
+          - id: pair_60691a0e7b884d978c00c20141889a46
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}alunos/1"
+        name: Listar por ID
+        meta:
+          id: req_00316f34136c431cab9afde474dbbe2d
+          created: 1744880851572
+          modified: 1744884903127
+          isPrivate: false
+          sortKey: -1744877409912.5
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_511488a1518f419cbdd89d3420aa48f8
+          - id: pair_60691a0e7b884d978c00c20141889a46
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}alunos"
+        name: Criar
+        meta:
+          id: req_cd980d109fc44749995038f2074b5384
+          created: 1744881868890
+          modified: 1744884916459
+          isPrivate: false
+          sortKey: -1744877409812.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"nome": "David Augusto",
+            	"email": "david@example.com",
+            	"senha": "Abcd123#$",
+            	"nascimento": "04/04/1989",
+            	"cpf": "35250376860"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_962d410012374950b8a668c21804fb5b
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_ab741fd038cd492e9c9e78124d95ee54
+          - id: pair_3ca51200daa246338bfb9c9e4407c7e1
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}alunos/5"
+        name: Atualizar
+        meta:
+          id: req_f5d89757e8a741ca869a8546c2747c8f
+          created: 1744882434034
+          modified: 1744884922008
+          isPrivate: false
+          sortKey: -1744877394644.25
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"nome": "David Augusto",
+            	"email": "david0002@example.com",
+            	"senha": "Abcd123#$",
+            	"nascimento": "04/05/1990",
+            	"cpf": "352.503.768-60"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_962d410012374950b8a668c21804fb5b
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_ab741fd038cd492e9c9e78124d95ee54
+          - id: pair_3ca51200daa246338bfb9c9e4407c7e1
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}alunos/4"
+        name: Remover
+        meta:
+          id: req_abe62a1b88314b7ebe075c7b3506c5da
+          created: 1744882870535
+          modified: 1744884925636
+          isPrivate: false
+          sortKey: -1744877387060.125
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_ab741fd038cd492e9c9e78124d95ee54
+          - id: pair_3ca51200daa246338bfb9c9e4407c7e1
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}alunos/busca"
+        name: Busca por Nome
+        meta:
+          id: req_8791989174ab480d91eb931090df9915
+          created: 1744909808866
+          modified: 1744910017478
+          isPrivate: false
+          sortKey: -1744877440299
+        method: GET
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"nome": "João"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_511488a1518f419cbdd89d3420aa48f8
+          - id: pair_60691a0e7b884d978c00c20141889a46
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 004 - Turmas
+    meta:
+      id: fld_5eb928e353014e91babd09cef57fd68e
+      created: 1744884966107
+      modified: 1744969630987
+      sortKey: -1743079887931
+    children:
+      - url: "{{ _.baseURL }}turmas"
+        name: Listar todos
+        meta:
+          id: req_6fbb24196c054674ab146910388b138e
+          created: 1744884966108
+          modified: 1744969639035
+          isPrivate: false
+          sortKey: -1744877440349
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_511488a1518f419cbdd89d3420aa48f8
+          - id: pair_60691a0e7b884d978c00c20141889a46
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}turmas/1"
+        name: Listar por ID
+        meta:
+          id: req_b264ef86269a4510bf9f27f77985985e
+          created: 1744884966108
+          modified: 1744884976405
+          isPrivate: false
+          sortKey: -1744877409912.5
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_511488a1518f419cbdd89d3420aa48f8
+          - id: pair_60691a0e7b884d978c00c20141889a46
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}turmas"
+        name: Criar
+        meta:
+          id: req_096cc9bd3dab42af8e6813c56375560a
+          created: 1744884966109
+          modified: 1744887356070
+          isPrivate: false
+          sortKey: -1744877409812.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"nome": "Turma teste",
+            	"descricao": "teste de turma com descricao"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_962d410012374950b8a668c21804fb5b
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_ab741fd038cd492e9c9e78124d95ee54
+          - id: pair_3ca51200daa246338bfb9c9e4407c7e1
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}turmas/3"
+        name: Remover
+        meta:
+          id: req_42513a71060d482eb406b0340ff41e1b
+          created: 1744884966110
+          modified: 1744888145209
+          isPrivate: false
+          sortKey: -1744877387060.125
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_ab741fd038cd492e9c9e78124d95ee54
+          - id: pair_3ca51200daa246338bfb9c9e4407c7e1
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}turmas/3"
+        name: Atualizar
+        meta:
+          id: req_982c4f8e2dc14ebab5523b8f9f327b42
+          created: 1744884966110
+          modified: 1744888138930
+          isPrivate: false
+          sortKey: -1744877394644.25
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"nome": "Turma teste",
+            	"descricao": "teste de turma com descricao"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_962d410012374950b8a668c21804fb5b
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_ab741fd038cd492e9c9e78124d95ee54
+          - id: pair_3ca51200daa246338bfb9c9e4407c7e1
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 005 - Usuarios
+    meta:
+      id: fld_e5779a8ede0249f0a423e5ffe1a17b37
+      created: 1744888234805
+      modified: 1744888234805
+      sortKey: -1742780306023.5
+    children:
+      - url: "{{ _.baseURL }}usuarios?id=2"
+        name: Listar todos
+        meta:
+          id: req_f5fc5b217a3f43efa7fd071f02815dad
+          created: 1744888234806
+          modified: 1744918570253
+          isPrivate: false
+          sortKey: -1744877440349
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_511488a1518f419cbdd89d3420aa48f8
+          - id: pair_60691a0e7b884d978c00c20141889a46
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}usuarios/1"
+        name: Listar por ID
+        meta:
+          id: req_1bf7d71116df412a88368d22662ee2ce
+          created: 1744888234807
+          modified: 1744890572516
+          isPrivate: false
+          sortKey: -1744877409912.5
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_511488a1518f419cbdd89d3420aa48f8
+          - id: pair_60691a0e7b884d978c00c20141889a46
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}usuarios"
+        name: Criar
+        meta:
+          id: req_92f227eff9934bcea6cc60ca19e800e5
+          created: 1744888234807
+          modified: 1744891205677
+          isPrivate: false
+          sortKey: -1744877409812.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"nome": "David Augusto",
+            	"email": "david@example.com",
+            	"senha": "Abcd123#$",
+            	"papel": "admin"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_962d410012374950b8a668c21804fb5b
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_ab741fd038cd492e9c9e78124d95ee54
+          - id: pair_3ca51200daa246338bfb9c9e4407c7e1
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}usuarios/3"
+        name: Remover
+        meta:
+          id: req_c1bdbfcce5fc496dbf5c1f6265ab322d
+          created: 1744888234808
+          modified: 1744892023823
+          isPrivate: false
+          sortKey: -1744877387060.125
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_ab741fd038cd492e9c9e78124d95ee54
+          - id: pair_3ca51200daa246338bfb9c9e4407c7e1
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}usuarios/1"
+        name: Atualizar
+        meta:
+          id: req_fff98f9f32eb442bb25c8107474cf4d7
+          created: 1744888234808
+          modified: 1744900330821
+          isPrivate: false
+          sortKey: -1744877394644.25
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"nome": "David Augusto 0001",
+            	"email": "david@example.com",
+            	"papel": "admin",
+            	"senha": "SenhaForte123!"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_962d410012374950b8a668c21804fb5b
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_ab741fd038cd492e9c9e78124d95ee54
+          - id: pair_3ca51200daa246338bfb9c9e4407c7e1
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 006 - Matriculas
+    meta:
+      id: fld_2aa52922f3494f91b77b87f372cc5d8f
+      created: 1744969674354
+      modified: 1744969674354
+      sortKey: -1742630515069.75
+    children:
+      - url: "{{ _.baseURL }}matriculas/"
+        name: Listar todos
+        meta:
+          id: req_54dbd6071fcb4e029880a1d7688aa9ae
+          created: 1744969674356
+          modified: 1744973315781
+          isPrivate: false
+          sortKey: -1744877409912.5
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_511488a1518f419cbdd89d3420aa48f8
+          - id: pair_60691a0e7b884d978c00c20141889a46
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}matriculas"
+        name: Criar
+        meta:
+          id: req_3b41ac244b8a4b66a1eebe1eccba6cb5
+          created: 1744969674357
+          modified: 1745001671501
+          isPrivate: false
+          sortKey: -1744877409812.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"aluno_id": 3,
+            	"turma_id": 1
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_962d410012374950b8a668c21804fb5b
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_ab741fd038cd492e9c9e78124d95ee54
+          - id: pair_3ca51200daa246338bfb9c9e4407c7e1
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}matriculas"
+        name: Remover
+        meta:
+          id: req_1fb329ec44ab434db71ae830f1af8804
+          created: 1744969674358
+          modified: 1745001682770
+          isPrivate: false
+          sortKey: -1744877387060.125
+        method: DELETE
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"aluno_id": 3,
+            	"turma_id": 1
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_ab741fd038cd492e9c9e78124d95ee54
+          - id: pair_3ca51200daa246338bfb9c9e4407c7e1
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}matriculas/turma/3"
+        name: Listar Alunos por Turma
+        meta:
+          id: req_a6b03b9df04e4fb6bc32b40bfe243283
+          created: 1744973304854
+          modified: 1744973304854
+          isPrivate: false
+          sortKey: -1744877409862.5
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+            id: pair_511488a1518f419cbdd89d3420aa48f8
+          - id: pair_60691a0e7b884d978c00c20141889a46
+            name: Authorization
+            value: Bearer {% response 'body', 'req_a9b0b5b2b71c47a3adf4fbbb2a4b8d90',
+              'b64::JC50b2tlbg==::46b', 'never', 60 %}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - url: "{{ _.baseURL }}health"
+    name: 001 - Health
+    meta:
+      id: req_b10ca16e23864b1cb0c805608426d566
+      created: 1744877379476
+      modified: 1745072463917
+      isPrivate: false
+      sortKey: -1744877379476
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.0.2
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_82edc29526d8730df23ce5c0a56c6c4f66fe6c0e
+    created: 1744877004192
+    modified: 1744877004192
+environments:
+  name: Base Environment
+  meta:
+    id: env_82edc29526d8730df23ce5c0a56c6c4f66fe6c0e
+    created: 1744877004191
+    modified: 1744877004191
+    isPrivate: false
+  subEnvironments:
+    - name: localhost
+      meta:
+        id: env_e42cb43010774beba231b36eba40a136
+        created: 1744877020550
+        modified: 1744883989389
+        isPrivate: false
+        sortKey: 1744877020550
+      data:
+        baseURL: http://localhost/api/
+      color: "#6bbfff"

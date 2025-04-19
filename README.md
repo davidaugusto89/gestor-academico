@@ -133,6 +133,17 @@ A documentação da API está disponível em:
 
 A especificação OpenAPI (`swagger.json`) está incluída no backend, com suporte completo via Swagger UI.
 
+### 🔌 Testes de API com Insomnia
+
+Este projeto inclui uma coleção do [Insomnia](https://insomnia.rest/) para facilitar os testes dos endpoints.
+
+📁 [Download da coleção Insomnia](docs/insomnia/insomnia_export.yaml)
+
+Para importar no Insomnia:
+1. Abra o Insomnia.
+2. Vá em **File > Import > From File**.
+3. Selecione o arquivo acima.
+
 ---
 
 ## ✅ Testes Automatizados
