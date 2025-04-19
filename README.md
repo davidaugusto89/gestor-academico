@@ -43,10 +43,23 @@ Projeto fullstack construído em **PHP puro** (sem frameworks) com **Vue 3**, qu
 
 ---
 
+## 📥 Clonando o Repositório
+
+Para obter uma cópia local do projeto, execute:
+
+```bash
+git clone https://github.com/davidaugusto89/gestor-academico.git
+cd gestor-academico
+```
+
+----
+
 ## ⚙️ Como Executar
 
 ### Pré-requisitos
 
+
+- Git
 - Docker
 - Docker Compose
 - Bash (Linux/Mac ou Git Bash no Windows)
